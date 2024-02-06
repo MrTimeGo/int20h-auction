@@ -3,12 +3,26 @@ using FluentValidation.AspNetCore;
 using System.Reflection;
 using Auction.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
+using Auction.WebApi.Entities;
+using Microsoft.AspNetCore.Identity;
+using Auction.WebApi.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContext<AuctionContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres")));
+
+builder.Services.AddIdentityCore<User>()
+    .AddEntityFrameworkStores<AuctionContext>();
+
+builder.Services.Configure<JwtOptions>(
+    builder.Configuration.GetSection("Jwt"));
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+});
 
 builder.Services.AddControllers();
 
@@ -31,6 +45,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 
