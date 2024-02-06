@@ -29,5 +29,11 @@ namespace Auction.WebApi.Controllers
             })
             .ToArray();
         }
+
+        [HttpPost]
+        public IActionResult Post([FromBody] WeatherForecast forecast)
+        {
+            return Ok(forecast);
+        }
     }
 }
