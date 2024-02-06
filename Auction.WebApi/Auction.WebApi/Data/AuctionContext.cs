@@ -10,6 +10,7 @@ public class AuctionContext(DbContextOptions<AuctionContext> options) : Identity
 
     public DbSet<Bet> Bets { get; set; }
     public DbSet<Tag> Tags { get; set; }
+    public DbSet<Message> Messages { get; set; }
 
     public DbSet<StaticFile> StaticFiles { get; set; }
 
@@ -47,6 +48,26 @@ public class AuctionContext(DbContextOptions<AuctionContext> options) : Identity
             .HasIndex(f => f.FilePath)
             .IsUnique();
 
+        builder
+            .Entity<Message>()
+            .HasOne(m => m.Lot)
+            .WithMany()
+            .HasForeignKey(m => m.LotId);
+
+        AutoGenerateCreatedAtValue<Bet>(builder);
+        AutoGenerateCreatedAtValue<Lot>(builder);
+        AutoGenerateCreatedAtValue<Tag>(builder);
+        AutoGenerateCreatedAtValue<StaticFile>(builder);
+        AutoGenerateCreatedAtValue<Message>(builder);
+
         base.OnModelCreating(builder);
+    }
+
+    private void AutoGenerateCreatedAtValue<TEntity>(ModelBuilder builder) where TEntity : BaseEntity
+    {
+        builder
+            .Entity<TEntity>()
+            .Property(e => e.CreatedAt)
+            .HasDefaultValueSql("CURRENT_TIMESTAMP(0)::TIMESTAMP WITHOUT TIME ZONE");
     }
 }

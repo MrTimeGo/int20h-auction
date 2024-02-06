@@ -43,7 +43,7 @@ namespace Auction.WebApi.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     FilePath = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(0)::TIMESTAMP WITHOUT TIME ZONE")
                 },
                 constraints: table =>
                 {
@@ -56,7 +56,7 @@ namespace Auction.WebApi.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(0)::TIMESTAMP WITHOUT TIME ZONE")
                 },
                 constraints: table =>
                 {
@@ -136,7 +136,7 @@ namespace Auction.WebApi.Migrations
                     StartingAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ClosingAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     AuthorId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(0)::TIMESTAMP WITHOUT TIME ZONE")
                 },
                 constraints: table =>
                 {
@@ -157,7 +157,7 @@ namespace Auction.WebApi.Migrations
                     Amount = table.Column<decimal>(type: "numeric", nullable: false),
                     LotId = table.Column<Guid>(type: "uuid", nullable: false),
                     AuthorId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(0)::TIMESTAMP WITHOUT TIME ZONE")
                 },
                 constraints: table =>
                 {
@@ -224,6 +224,26 @@ namespace Auction.WebApi.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Messages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Text = table.Column<string>(type: "text", nullable: false),
+                    LotId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(0)::TIMESTAMP WITHOUT TIME ZONE")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Messages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Messages_Lots_LotId",
+                        column: x => x.LotId,
+                        principalTable: "Lots",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
                 table: "AspNetUserClaims",
@@ -271,6 +291,11 @@ namespace Auction.WebApi.Migrations
                 column: "AuthorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Messages_LotId",
+                table: "Messages",
+                column: "LotId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_StaticFiles_FilePath",
                 table: "StaticFiles",
                 column: "FilePath",
@@ -305,13 +330,16 @@ namespace Auction.WebApi.Migrations
                 name: "LotTag");
 
             migrationBuilder.DropTable(
+                name: "Messages");
+
+            migrationBuilder.DropTable(
                 name: "StaticFiles");
 
             migrationBuilder.DropTable(
-                name: "Lots");
+                name: "Tags");
 
             migrationBuilder.DropTable(
-                name: "Tags");
+                name: "Lots");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

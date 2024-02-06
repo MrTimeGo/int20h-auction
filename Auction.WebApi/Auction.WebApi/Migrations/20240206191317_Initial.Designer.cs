@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Auction.WebApi.Migrations
 {
     [DbContext(typeof(AuctionContext))]
-    [Migration("20240206145354_Initial")]
+    [Migration("20240206191317_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -38,7 +38,9 @@ namespace Auction.WebApi.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP(0)::TIMESTAMP WITHOUT TIME ZONE");
 
                     b.Property<Guid>("LotId")
                         .HasColumnType("uuid");
@@ -65,7 +67,9 @@ namespace Auction.WebApi.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP(0)::TIMESTAMP WITHOUT TIME ZONE");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -91,6 +95,31 @@ namespace Auction.WebApi.Migrations
                     b.ToTable("Lots");
                 });
 
+            modelBuilder.Entity("Auction.WebApi.Entities.Message", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP(0)::TIMESTAMP WITHOUT TIME ZONE");
+
+                    b.Property<Guid>("LotId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LotId");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("Auction.WebApi.Entities.StaticFile", b =>
                 {
                     b.Property<Guid>("Id")
@@ -98,7 +127,9 @@ namespace Auction.WebApi.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP(0)::TIMESTAMP WITHOUT TIME ZONE");
 
                     b.Property<string>("FilePath")
                         .IsRequired()
@@ -119,7 +150,9 @@ namespace Auction.WebApi.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP(0)::TIMESTAMP WITHOUT TIME ZONE");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -320,6 +353,17 @@ namespace Auction.WebApi.Migrations
                         .IsRequired();
 
                     b.Navigation("Author");
+                });
+
+            modelBuilder.Entity("Auction.WebApi.Entities.Message", b =>
+                {
+                    b.HasOne("Auction.WebApi.Entities.Lot", "Lot")
+                        .WithMany()
+                        .HasForeignKey("LotId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Lot");
                 });
 
             modelBuilder.Entity("LotStaticFile", b =>
