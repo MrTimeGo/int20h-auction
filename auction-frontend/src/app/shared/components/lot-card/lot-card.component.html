@@ -24,7 +24,7 @@
       [label]="'Початок ' + (lot.startingAt | date : 'd.MM.yy о H:mm')"></app-chip>
     } @else if (lot.status === lotStatusEnum.Active) {
     <app-chip
-      [label]="'Закінчується ' + (lot.startingAt | date : 'd.MM.yy о H:mm')"></app-chip>
+      [label]="'Закінчується ' + (lot.closingAt | date : 'd.MM.yy о H:mm')"></app-chip>
     }
   </div>
 </div>

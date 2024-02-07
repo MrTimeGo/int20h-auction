@@ -35,7 +35,7 @@ public class AuctionContext(DbContextOptions<AuctionContext> options) : Identity
         builder
             .Entity<Bet>()
             .HasOne(b => b.Lot)
-            .WithMany()
+            .WithMany(l => l.Bets)
             .HasForeignKey(b => b.LotId);
 
         builder

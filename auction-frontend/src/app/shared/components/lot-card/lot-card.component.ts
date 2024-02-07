@@ -18,7 +18,7 @@ export class LotCardComponent {
     initialPrice: 1000,
     mininalStep: 1000,
     startingAt: new Date(2024, 3, 22, 12, 0),
-    endingAt: new Date(2024, 3, 22, 16, 0),
+    closingAt: new Date(2024, 3, 22, 16, 0),
     status: LotStatus.NotStarted,
     images: [
       'https://splidejs.com/images/slides/image-slider/01.jpg',
