@@ -1,5 +1,7 @@
 ﻿using Auction.WebApi.Dto.Identity;
 using Auction.WebApi.Entities;
+using Auction.WebApi.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,19 +11,13 @@ namespace Auction.WebApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class IdentityController(
-    UserManager<User> userManager,
-    SignInManager<User> signInManager
+    IAuthService authService
     ) : ControllerBase
 {
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] CreateUserDto dto)
     {
-        var result = await userManager.CreateAsync(new User()
-        {
-            Email = dto.Email,
-            UserName = dto.Username
-        }, dto.Password);
-
+       var result = await authService.RegisterUserAsync(dto);
 
         if (result.Succeeded)
         {
@@ -30,32 +26,44 @@ public class IdentityController(
         return BadRequest();
     }
 
-    [HttpPost("/login")]
+    [HttpPost("login")]
     public async Task<ActionResult<TokensDto>> Login([FromBody] LoginDto dto)
     {
-        var user = await userManager.FindByNameAsync(dto.EmailOrUsername) ?? await userManager.FindByEmailAsync(dto.EmailOrUsername);
-        if (user is null)
+        try
+        {
+            return await authService.LoginUserAsync(dto);
+        }
+        catch
         {
             return Unauthorized();
         }
-        var result = await signInManager.PasswordSignInAsync(user, dto.Password, false, false);
+    }
 
-        if (!result.Succeeded)
+    [Authorize]
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        try
+        {
+            await authService.LogoutAsync(User);
+            return Ok();
+        }
+        catch 
         {
             return Unauthorized();
         }
+    }
 
-        ////// 1. Generate jwt access token
-        // 2. Generate and save refresh token
-        var accessToken = "adasda"; // TODO
-        var refreshToken = "adsadas"; // TODO
-        /////
-
-
-        return new TokensDto
+    [HttpPost("refresh")]
+    public async Task<ActionResult<string>> RefreshToken(TokensDto tokens)
+    {
+        try
         {
-            AccessToken = accessToken,
-            RefreshToken = refreshToken
-        };
+            return await authService.GenerateRefreshTokenAsync(tokens);
+        }
+        catch
+        {
+            return Unauthorized();
+        }
     }
 }
