@@ -4,7 +4,6 @@ using Auction.WebApi.Dto.Lot;
 using Auction.WebApi.Entities;
 using Auction.WebApi.Services.Interfaces;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Auction.WebApi.Services.Implementations;
@@ -32,7 +31,7 @@ public class LotService(AuctionContext context, ICurrentUserService currentUserS
 
         var count = await query.CountAsync();
 
-        if (pagination is not null)
+        if (pagination is not null && pagination.PageSize != 0)
         {
             query = query.Skip(pagination.Page * pagination.PageSize).Take(pagination.PageSize);
         }
@@ -66,10 +65,12 @@ public class LotService(AuctionContext context, ICurrentUserService currentUserS
 
     private IQueryable<Lot> ApplySearchTerm(IQueryable<Lot> query, string searchTerm)
     {
+        var subterms = searchTerm.ToLower().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
         return query.Include(l => l.Tags)
                 .Where(l =>
-                    l.Name.ToLower().Contains(searchTerm.ToLower()) ||
-                    l.Tags.Any(t => t.Name.ToLower().Contains(searchTerm.ToLower()))
+                    subterms.Any(s => l.Name.ToLower().Contains(s)) ||
+                    l.Tags.Any(t => subterms.Contains(t.Name.ToLower()))
                 );
     }
 

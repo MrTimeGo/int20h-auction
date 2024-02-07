@@ -1,6 +1,7 @@
 ﻿using Auction.WebApi.Dto;
 using Auction.WebApi.Dto.Lot;
 using Auction.WebApi.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Auction.WebApi.Controllers;
@@ -9,6 +10,7 @@ namespace Auction.WebApi.Controllers;
 public class LotController(ILotService lotService) : ControllerBase
 {
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<PaginationResult<LotDto>>> GetLotList(
             [FromQuery] string? searchTerm,
             [FromQuery] LotFilter? filters,
