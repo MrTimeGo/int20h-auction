@@ -28,17 +28,17 @@ module.exports = {
         fontWeight: '700',
       }],
       'h2': ['42px', {
-        lineHeight: '115%',
+        lineHeight: '110%',
         letterSpacing: '0',
         fontWeight: '700',
       }],
       'h3': ['34px', {
-        lineHeight: '120%',
+        lineHeight: '110%',
         letterSpacing: '0',
-        fontWeight: '500',
+        fontWeight: '600',
       }],
       'h4': ['26px', {
-        lineHeight: '130%',
+        lineHeight: '120%',
         letterSpacing: '0',
         fontWeight: '500',
       }],
@@ -53,7 +53,7 @@ module.exports = {
         fontWeight: '400',
       }],
       'secondary': ['14px', {
-        lineHeight: '150%',
+        lineHeight: '140%',
         letterSpacing: '0',
         fontWeight: '500',
       }],
@@ -68,7 +68,11 @@ module.exports = {
         fontWeight: '500',
       }],
     },
-    extend: {},
+    extend: {
+      'boxShadow': {
+        'inner-xl': 'inset 0 0 48px 0 rgba(0, 0, 0, 0.16), inset 0 0 48px 0 rgba(0, 0, 0, 0.16)'
+      }
+    },
   },
   plugins: [],
 }

@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+$material-icons-font-path: '/assets/iconfont/';
+
+@import 'material-icons/iconfont/material-icons.scss';
+
+@font-face {
+  font-family: 'Fixel';
+  src: url('assets/fonts/FixelText/FixelText-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
-  font-family: 'Roboto', sans-serif;;
+  font-family: 'Fixel';
+}
+
+i.material-icons {
+  width: 24px;
+  height: 24px;
 }
