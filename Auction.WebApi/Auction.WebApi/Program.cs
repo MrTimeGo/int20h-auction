@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using Auction.WebApi.Extentions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,9 +31,14 @@ builder.Services.AddIdentityCore<User>(options =>
 builder.Services.Configure<JwtOptions>(
     builder.Configuration.GetSection("Jwt"));
 
+builder.Services.Configure<S3Options>(
+    builder.Configuration.GetSection("AWS"));
+
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUploadFileService, UploadFileService>();
+builder.Services.AddScoped<IFileService, FileService>();
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
@@ -44,6 +50,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
     };
 });
+
+if (builder.Environment.IsDevelopment())
+    builder.Services.AddDevAws(builder.Configuration);
+else
+    builder.Services.AddProdAws(builder.Configuration);
 
 builder.Services.AddControllers();
 
