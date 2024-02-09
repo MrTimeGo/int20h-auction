@@ -1,0 +1,30 @@
+<app-auth-form
+  title="Реєстрація"
+  [subtitle]="step === 1 ? 'Заповніть поля нижче, вказавши Ім`ям та Emale, це допоможе нам в майбутньому звязатися з тобою' : 'Заповніть поля нижче, придумавши пароль та повторивши його для безпеки вашого акаунту'"
+  [step]="step">
+  <ng-container formFields>
+    @if (step === 1) {
+    <app-form-field label="Твоє ім'я" placeholder="Ярослав"></app-form-field>
+    <app-form-field
+      label="Твій Email"
+      placeholder="myemail@example.com"></app-form-field>
+    } @else {
+    <app-form-field
+      label="Придумай пароль"
+      placeholder="********"
+      type="password"></app-form-field>
+    <app-form-field
+      label="Повтори пароль"
+      placeholder="********"
+      type="password"></app-form-field>
+    }
+  </ng-container>
+  <ng-container actions>
+    <app-button class="w-full"
+      >{{step === 1 ? 'Продовжити' : 'Створити аккаунт' }}</app-button
+    >
+    <a class="text-secondary-buttons text-gray-70 hover:cursor-pointer">
+      Я вже маю акаунт!
+    </a>
+  </ng-container>
+</app-auth-form>

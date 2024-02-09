@@ -1,0 +1,6 @@
+<button
+  (click)="clicked.emit()"
+  [disabled]="disabled"
+  class="w-full bg-primary-100 rounded-lg text-white px-6 py-2 text-buttons hover:bg-primary-90 hover:drop-shadow-md active:bg-primary-100 active:drop-shadow-none disabled:bg-gray-20 disabled:text-gray-30">
+  <ng-content></ng-content>
+</button>

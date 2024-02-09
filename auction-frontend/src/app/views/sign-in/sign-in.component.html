@@ -1,0 +1,19 @@
+<app-auth-form
+  title="Вхід"
+  subtitle="З поверненням. Ми раді знову бачити тебе в нашому сервісі">
+  <ng-container formFields>
+    <app-form-field
+      label="Ім'я або Email"
+      placeholder="myemail@example.com"></app-form-field>
+    <app-form-field
+      label="Пароль"
+      placeholder="******"
+      type="password"></app-form-field>
+  </ng-container>
+  <ng-container actions>
+    <app-button class="w-full">Продовжити</app-button>
+    <a class="text-secondary-buttons text-gray-70 hover:cursor-pointer">
+      Я ще не маю акаунта
+    </a>
+  </ng-container>
+</app-auth-form>
