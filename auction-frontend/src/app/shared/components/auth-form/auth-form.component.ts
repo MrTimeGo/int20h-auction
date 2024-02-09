@@ -11,4 +11,5 @@ export class AuthFormComponent {
   @Input() title = '';
   @Input() subtitle = '';
   @Input() step?: number;
+  @Input() errors: string[] = [];
 }

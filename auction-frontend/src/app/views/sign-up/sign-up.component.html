@@ -1,28 +1,38 @@
 <app-auth-form
   title="Реєстрація"
   [subtitle]="step === 1 ? 'Заповніть поля нижче, вказавши Ім`ям та Emale, це допоможе нам в майбутньому звязатися з тобою' : 'Заповніть поля нижче, придумавши пароль та повторивши його для безпеки вашого акаунту'"
+  [errors]="[]"
   [step]="step">
   <ng-container formFields>
     @if (step === 1) {
-    <app-form-field label="Твоє ім'я" placeholder="Ярослав"></app-form-field>
+    <app-form-field
+      label="Твоє ім'я"
+      placeholder="Ярослав"
+      [control]="username"></app-form-field>
     <app-form-field
       label="Твій Email"
-      placeholder="myemail@example.com"></app-form-field>
+      placeholder="myemail@example.com"
+      [control]="email"></app-form-field>
     } @else {
     <app-form-field
       label="Придумай пароль"
       placeholder="********"
-      type="password"></app-form-field>
+      type="password"
+      [control]="password"></app-form-field>
     <app-form-field
       label="Повтори пароль"
       placeholder="********"
-      type="password"></app-form-field>
+      type="password"
+      [control]="passwordConfim"></app-form-field>
     }
   </ng-container>
   <ng-container actions>
-    <app-button class="w-full"
-      >{{step === 1 ? 'Продовжити' : 'Створити аккаунт' }}</app-button
-    >
+    <app-button
+      class="w-full"
+      (clicked)="submit()"
+      [disabled]="step === 1 ? username.invalid || email.invalid : password.invalid || passwordConfim.invalid">
+      {{step === 1 ? 'Продовжити' : 'Створити аккаунт' }}
+    </app-button>
     <a
       class="text-secondary-buttons text-gray-70 hover:cursor-pointer"
       [routerLink]="'/sign-in'">
