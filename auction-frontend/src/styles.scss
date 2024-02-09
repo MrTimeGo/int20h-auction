@@ -6,6 +6,9 @@ $material-icons-font-path: '/assets/iconfont/';
 
 @import 'material-icons/iconfont/material-icons.scss';
 
+// regular style toast
+@import 'ngx-toastr/toastr';
+
 @font-face {
   font-family: 'Fixel';
   src: url('assets/fonts/FixelText/FixelText-Regular.woff2') format('woff2');

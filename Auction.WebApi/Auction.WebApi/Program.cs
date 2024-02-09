@@ -25,6 +25,17 @@ builder.Services.AddDbContext<AuctionContext>(options =>
 
 builder.Services.AddIdentityCore<User>(options =>
 {
+    // Password settings.
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequiredUniqueChars = 1;
+
+    // User settings.
+    options.User.AllowedUserNameCharacters = options.User.AllowedUserNameCharacters + ' ';
+
     options.User.RequireUniqueEmail = true;
 })
     .AddEntityFrameworkStores<AuctionContext>()
