@@ -3,6 +3,7 @@ import { FormFieldComponent, ButtonComponent, AuthFormComponent } from '../../sh
 import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../shared/services';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -15,6 +16,7 @@ import { AuthService } from '../../shared/services';
 export class SignInComponent {
   authService = inject(AuthService);
   router = inject(Router);
+  toastr = inject(ToastrService);
 
   fb = inject(FormBuilder);
   form = this.fb.nonNullable.group({
@@ -32,7 +34,11 @@ export class SignInComponent {
 
   submit() {
     const { emailOrUsername, password } = this.form.value;
-    this.authService.signIn(emailOrUsername!, password!).subscribe();
+    this.authService.signIn(emailOrUsername!, password!).subscribe({
+      error: () => {
+        this.toastr.error('Не правильний логін або пароль');
+      }
+    });
     this.authService.getCurrentUser$().subscribe(user => {
       if (user && (user.email === emailOrUsername || user.username === emailOrUsername)) {
         this.router.navigate(['/lots']);
