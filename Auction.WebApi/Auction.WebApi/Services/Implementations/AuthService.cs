@@ -66,12 +66,12 @@ namespace Auction.WebApi.Services.Implementations
 
         private static (string, DateTime)? TryGetExistingRefreshToken(User user)
         {
-            if (user.RefreshTokenExpiresAt < DateTime.UtcNow)
+            if (user.RefreshToken == "" || user.RefreshTokenExpiresAt > DateTime.UtcNow)
             {
-                return (user.RefreshToken, user.RefreshTokenExpiresAt);
+                return null;
             }
 
-            return null;
+            return (user.RefreshToken, user.RefreshTokenExpiresAt);
         }
 
         public async Task LogoutAsync(ClaimsPrincipal principal)
