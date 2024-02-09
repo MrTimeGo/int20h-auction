@@ -2,5 +2,27 @@
   <h1 class="text-h3 text-yellow font-extrabold">
     <span class="text-primary-100">UA</span>Charity
   </h1>
-  <a class="text-buttons text-gray-70 hover:cursor-pointer">Вхід/Реєстрація</a>
+  @if (currentUser$ | async; as currentUser) {
+  <div class="flex gap-2 items-center">
+    <span class="text-secondary-buttons text-gray-70">
+      {{currentUser.username}}
+    </span>
+    <button
+      class="text-buttons text-gray-70 hover:cursor-pointer flex"
+      (click)="signOut()">
+      <i class="material-icons">logout</i>
+    </button>
+  </div>
+  } @else {
+  <div class="flex gap-4 items-baseline">
+    <a
+      class="text-buttons text-gray-70 hover:cursor-pointer"
+      [routerLink]="'/sign-in'">
+      Вхід
+    </a>
+    <app-button (clicked)="router.navigate(['/sign-up'])">
+      Реєстрація
+    </app-button>
+  </div>
+  }
 </header>

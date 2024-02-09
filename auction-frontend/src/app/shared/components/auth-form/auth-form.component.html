@@ -1,0 +1,25 @@
+<div class="grid grid-cols-2 py-40 gap-8">
+  <div class="flex flex-col gap-12">
+    <div class="flex flex-col gap-2">
+      <h2 class="text-h1 text-gray-80">{{ title }}</h2>
+      <p class="text-h5 text-gray-60">{{ subtitle }}</p>
+    </div>
+    <div class="flex flex-col gap-8">
+      <ng-content select="[formFields]"></ng-content>
+    </div>
+    <div class="flex flex-col gap-4 items-center">
+      <ng-content select="[actions]"></ng-content>
+    </div>
+  </div>
+  <div class="relative">
+    @if (step){
+    <div
+      class="absolute left-1/2 -translate-x-1/2 text-h3 font-bold text-primary-80 h-full grid grid-flow-col auto-cols-min grid-rows-2 gga-y-52">
+      Крок
+      <span></span>
+      <span></span>
+      <div class="text-[600px]">{{step}}</div>
+    </div>
+    }
+  </div>
+</div>

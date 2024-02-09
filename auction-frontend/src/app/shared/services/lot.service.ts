@@ -56,7 +56,9 @@ export class LotService {
 
     const url = queryString ? `${this.baseUrl}?${queryString}` : this.baseUrl;
 
-    this.http.get<PaginationResult<Lot>>(url).subscribe(this.lots);
+    this.http.get<PaginationResult<Lot>>(url).subscribe((lots) => {
+      this.lots.next(lots);
+    });
   }
 
   createLot(lot: CreateLot) {

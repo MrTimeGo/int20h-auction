@@ -1,10 +1,8 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { LotCardComponent } from '../../shared/components/lot-card/lot-card.component';
-import { Observable } from 'rxjs';
-import { Lot } from '../../shared/models';
+import { Component, inject } from '@angular/core';
 import { LotService } from '../../shared/services';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { LotCardComponent } from '../../shared/components';
 
 @Component({
   selector: 'app-lot',
@@ -13,13 +11,8 @@ import { RouterModule } from '@angular/router';
   templateUrl: './lot.component.html',
   styleUrl: './lot.component.scss'
 })
-export class LotComponent implements OnInit {
-  lots$?: Observable<Lot[]>
-
+export class LotComponent {
   private lotService = inject(LotService);
   
-  ngOnInit(): void {
-    this.lots$ = this.lotService.getLots$()
-  }
-
+  lots$ = this.lotService.getLots$();
 }

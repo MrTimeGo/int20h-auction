@@ -1,7 +1,7 @@
 const colors = {
   'primary-100': '#636BEB',
   'primary-90': '#8087EE',
-  'primary-80': '#9EA3F2',
+  'primary-80': '#CEDFFF',
   'green': '#1DBD40',
   'yellow': '#FCD650',
   'red': '#E64646',
@@ -80,7 +80,8 @@ module.exports = {
   plugins: [],
   safelist: [
     ...Object.keys(colors).map(x => `text-${x}`),
-    ...Object.keys(colors).map(x => `bg-${x}`)
+    ...Object.keys(colors).map(x => `bg-${x}`),
+    //...Object.keys(colors).map(x => `border-${x}`),
   ]
     
 }

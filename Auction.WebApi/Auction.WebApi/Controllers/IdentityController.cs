@@ -55,11 +55,11 @@ public class IdentityController(
     }
 
     [HttpPost("refresh")]
-    public async Task<ActionResult<string>> RefreshToken(TokensDto tokens)
+    public async Task<ActionResult> RefreshToken(TokensDto tokens)
     {
         try
         {
-            return await authService.GenerateRefreshTokenAsync(tokens);
+            return Ok(new RefreshTokenDto { RefreshToken = await authService.GenerateRefreshTokenAsync(tokens) });
         }
         catch
         {
