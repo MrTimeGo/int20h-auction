@@ -23,47 +23,26 @@ public class IdentityController(
         {
             return Ok();
         }
-        return BadRequest();
+        return BadRequest(result.Errors);
     }
 
     [HttpPost("login")]
     public async Task<ActionResult<TokensDto>> Login([FromBody] LoginDto dto)
     {
-        try
-        {
-            return await authService.LoginUserAsync(dto);
-        }
-        catch
-        {
-            return Unauthorized();
-        }
+        return await authService.LoginUserAsync(dto);
     }
 
     [Authorize]
     [HttpPost("logout")]
     public async Task<IActionResult> Logout()
     {
-        try
-        {
-            await authService.LogoutAsync(User);
-            return Ok();
-        }
-        catch 
-        {
-            return Unauthorized();
-        }
+        await authService.LogoutAsync(User);
+        return Ok();
     }
 
     [HttpPost("refresh")]
     public async Task<ActionResult> RefreshToken(TokensDto tokens)
     {
-        try
-        {
-            return Ok(new RefreshTokenDto { RefreshToken = await authService.GenerateRefreshTokenAsync(tokens) });
-        }
-        catch
-        {
-            return Unauthorized();
-        }
+        return Ok(new RefreshTokenDto { RefreshToken = await authService.GenerateRefreshTokenAsync(tokens) });
     }
 }
