@@ -1,4 +1,5 @@
 <span
-  class="px-4 py-1 bg-{{backgroundColor}} text-{{textColor}} text-secondary rounded">
+  class="px-4 py-1 text-secondary rounded"
+  [class]="['bg-'+ backgroundColor, 'text-' + textColor]">
   {{ label }}
 </span>

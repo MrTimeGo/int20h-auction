@@ -1,25 +1,28 @@
+const colors = {
+  'primary-100': '#636BEB',
+  'primary-90': '#8087EE',
+  'primary-80': '#9EA3F2',
+  'green': '#1DBD40',
+  'yellow': '#FCD650',
+  'red': '#E64646',
+  'white': '#FFFFFF',
+  'gray-10': '#ECEEF2',
+  'gray-20': '#D2D6DE',
+  'gray-30': '#A5ABB5',
+  'gray-40': '#6C717A',
+  'gray-60': '#4C4F56',
+  'gray-70': '#303134',
+  'gray-80': '#1E2023',
+};
+
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     "./src/**/*.{html,ts}",
   ],
   theme: {
-    colors: {
-      'primary-100': '#636BEB',
-      'primary-90': '#8087EE',
-      'primary-80': '#9EA3F2',
-      'green': '#1DBD40',
-      'yellow': '#FCD650',
-      'red': '#E64646',
-      'white': '#FFFFFF',
-      'gray-10': '#ECEEF2',
-      'gray-20': '#D2D6DE',
-      'gray-30': '#A5ABB5',
-      'gray-40': '#6C717A',
-      'gray-60': '#4C4F56',
-      'gray-70': '#303134',
-      'gray-80': '#1E2023',
-    },
+    colors,
     fontSize: {
       /* 1rem = 16px */
       'h1': ['58px', {
@@ -75,4 +78,9 @@ module.exports = {
     },
   },
   plugins: [],
+  safelist: [
+    ...Object.keys(colors).map(x => `text-${x}`),
+    ...Object.keys(colors).map(x => `bg-${x}`)
+  ]
+    
 }

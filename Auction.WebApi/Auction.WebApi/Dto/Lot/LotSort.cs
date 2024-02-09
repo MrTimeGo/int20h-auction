@@ -2,7 +2,7 @@
 
 public class LotSort
 {
-    public LotSortType Type { get; set; }
+    public LotSortType? Type { get; set; }
     public LotSortOrder SortOrder { get; set; }
 }
 

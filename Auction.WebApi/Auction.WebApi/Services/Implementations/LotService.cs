@@ -10,11 +10,47 @@ namespace Auction.WebApi.Services.Implementations;
 
 public class LotService(AuctionContext context, ICurrentUserService currentUserService, IMapper mapper) : ILotService
 {
-    public async Task<PaginationResult<LotDto>> GetLotsAsync(string? searchTerm, LotFilter? filter, LotSort? sort, PaginationModel? pagination)
+    public async Task<LotDto> CreateLotAsync(CreateLotDto dto)
     {
-        var query = context.Lots.AsQueryable();
+        var entity = mapper.Map<Lot>(dto)!;
 
-        if (filter is not null)
+        entity.AuthorId = currentUserService.CurrentUserId!.Value;
+
+        entity.Images = await context.StaticFiles.Where(sf => dto.Images.Contains(sf.Id)).ToListAsync();
+        
+
+        var existingTags = await context.Tags.Where(x => dto.Tags.Any(y => x.Name.ToLower() == y.ToLower())).ToListAsync();
+        var notExistingTags = dto.Tags.Where(x => !existingTags.Any(y => y.Name == x)).ToList();
+
+        if (notExistingTags.Count != 0)
+        {
+            var newTags = await CreateTags(notExistingTags);
+            existingTags.AddRange(newTags);
+        }
+
+        entity.Tags = existingTags;
+
+        var result = context.Lots.Add(entity);
+
+        await context.SaveChangesAsync();
+
+        return mapper.Map<LotDto>(result.Entity)!;
+    }
+
+    private async Task<List<Tag>> CreateTags(List<string> tags)
+    {
+        context.Tags.AddRange(tags.Select(t => new Tag { Name = t }));
+
+        await context.SaveChangesAsync();
+
+        return await context.Tags.Where(t => tags.Contains(t.Name)).ToListAsync();
+    }
+
+    public async Task<PaginationResult<LotDto>> GetLotsAsync(string? searchTerm, LotFilter filter, LotSort sort, PaginationModel pagination)
+    {
+        var query = context.Lots.Include(l => l.Tags).AsQueryable();
+
+        if (filter.MyLots is not null || filter.MyBets is not null || filter.LotStatus is not null)
         {
             query = ApplyFilter(query, filter);
         }
@@ -24,7 +60,7 @@ public class LotService(AuctionContext context, ICurrentUserService currentUserS
             query = ApplySearchTerm(query, searchTerm);
         }
 
-        if (sort is not null)
+        if (sort.Type is not null)
         {
             query = ApplySort(query, sort);
         }
@@ -49,8 +85,8 @@ public class LotService(AuctionContext context, ICurrentUserService currentUserS
     {
         query = query
                 .Include(l => l.Bets)
-                .Where(l => (filter.MyLots && l.AuthorId == currentUserService.CurrentUserId) ||
-                    (filter.MyBets && l.Bets.Any(b => b.AuthorId == currentUserService.CurrentUserId))
+                .Where(l => (filter.MyLots!.Value && l.AuthorId == currentUserService.CurrentUserId) ||
+                    (filter.MyBets!.Value && l.Bets.Any(b => b.AuthorId == currentUserService.CurrentUserId))
         );
         if (filter.LotStatus is not null)
         {
@@ -67,7 +103,7 @@ public class LotService(AuctionContext context, ICurrentUserService currentUserS
     {
         var subterms = searchTerm.ToLower().Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-        return query.Include(l => l.Tags)
+        return query
                 .Where(l =>
                     subterms.Any(s => l.Name.ToLower().Contains(s)) ||
                     l.Tags.Any(t => subterms.Contains(t.Name.ToLower()))
