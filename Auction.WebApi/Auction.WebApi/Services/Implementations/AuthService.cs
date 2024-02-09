@@ -8,7 +8,8 @@ namespace Auction.WebApi.Services.Implementations
 {
     public class AuthService(SignInManager<User> signInManager,
                             ITokenService tokenService,
-                            IUserService userService) : IAuthService
+                            IUserService userService,
+                            ILogger<AuthService> logger) : IAuthService
     {
         public async Task<string> GenerateRefreshTokenAsync(TokensDto tokens)
         {
@@ -16,8 +17,23 @@ namespace Auction.WebApi.Services.Implementations
             var user = await userService.GetUserByClaimPrincipalsAsync(claimPrincipal);
             if (user is null || user.RefreshToken != tokens.RefreshToken || user.RefreshTokenExpiresAt <= DateTime.UtcNow)
             {
-                throw new Exception("Token expired");
+                logger.LogError("User was not found with provided access token");
+                throw new Exception("User not found");
             }
+
+            if (user.RefreshToken != tokens.RefreshToken)
+            {
+                logger.LogError("Invalid refresh token");
+                throw new Exception("Invalid refresh token");
+            }
+
+            if (user.RefreshTokenExpiresAt <= DateTime.UtcNow)
+            {
+                logger.LogError("Refresh token expired");
+                throw new Exception("Refresh token expired");
+            }
+
+
             return tokenService.GenerateAccessToken(user);
         }
 
