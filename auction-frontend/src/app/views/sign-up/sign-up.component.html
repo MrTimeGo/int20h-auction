@@ -23,7 +23,9 @@
     <app-button class="w-full"
       >{{step === 1 ? 'Продовжити' : 'Створити аккаунт' }}</app-button
     >
-    <a class="text-secondary-buttons text-gray-70 hover:cursor-pointer">
+    <a
+      class="text-secondary-buttons text-gray-70 hover:cursor-pointer"
+      [routerLink]="'/sign-in'">
       Я вже маю акаунт!
     </a>
   </ng-container>

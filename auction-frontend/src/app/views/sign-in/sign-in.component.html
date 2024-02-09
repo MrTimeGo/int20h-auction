@@ -4,15 +4,21 @@
   <ng-container formFields>
     <app-form-field
       label="Ім'я або Email"
-      placeholder="myemail@example.com"></app-form-field>
+      placeholder="myemail@example.com"
+      [control]="emailOrUsername"></app-form-field>
     <app-form-field
       label="Пароль"
       placeholder="******"
-      type="password"></app-form-field>
+      type="password"
+      [control]="password"></app-form-field>
   </ng-container>
   <ng-container actions>
-    <app-button class="w-full">Продовжити</app-button>
-    <a class="text-secondary-buttons text-gray-70 hover:cursor-pointer">
+    <app-button class="w-full" [disabled]="form.invalid" (clicked)="submit()">
+      Продовжити
+    </app-button>
+    <a
+      class="text-secondary-buttons text-gray-70 hover:cursor-pointer"
+      [routerLink]="'/sign-up'">
       Я ще не маю акаунта
     </a>
   </ng-container>
