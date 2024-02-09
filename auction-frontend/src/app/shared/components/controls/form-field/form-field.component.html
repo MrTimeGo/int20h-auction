@@ -4,3 +4,9 @@
   [type]="type"
   [control]="control"
   [placeholder]="placeholder"></app-input>
+<p
+  class="mt-1 text-red text-secondary"
+  [class.invisible]="!(control.invalid && control.touched)">
+  @if (control.invalid && control.touched){ {{errors.join(', ')}} } @else { smth
+  }
+</p>

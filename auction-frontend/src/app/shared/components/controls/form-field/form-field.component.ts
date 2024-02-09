@@ -14,4 +14,5 @@ export class FormFieldComponent {
   @Input() type = 'text';
   @Input() label = '';
   @Input() placeholder: string = '';
+  @Input() errors: string[] = ['1'];
 }

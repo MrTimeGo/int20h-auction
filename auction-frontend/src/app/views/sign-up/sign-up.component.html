@@ -16,29 +16,33 @@
     <app-form-field
       label="Твоє ім'я"
       placeholder="Ярослав"
-      [control]="username"></app-form-field>
+      [control]="username"
+      [errors]="usernameErrors"></app-form-field>
     <app-form-field
       label="Твій Email"
       placeholder="myemail@example.com"
-      [control]="email"></app-form-field>
+      [control]="email"
+      [errors]="emailErrors"></app-form-field>
     } @else {
     <app-form-field
       label="Придумай пароль"
       placeholder="********"
       type="password"
-      [control]="password"></app-form-field>
+      [control]="password"
+      [errors]="passwordErorrs"></app-form-field>
     <app-form-field
       label="Повтори пароль"
       placeholder="********"
       type="password"
-      [control]="passwordConfim"></app-form-field>
+      [control]="passwordConfirm"
+      [errors]="passwordConfirmErrors"></app-form-field>
     }
   </ng-container>
   <ng-container actions>
     <app-button
       class="w-full"
       (clicked)="submit()"
-      [disabled]="step === 1 ? username.invalid || email.invalid : password.invalid || passwordConfim.invalid">
+      [disabled]="step === 1 ? username.invalid || email.invalid : password.invalid || passwordConfirm.invalid">
       {{step === 1 ? 'Продовжити' : 'Створити аккаунт' }}
     </app-button>
     <a
