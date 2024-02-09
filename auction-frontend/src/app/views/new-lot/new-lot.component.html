@@ -1,0 +1,16 @@
+<div class="flex flex-col" [formGroup]="form">
+  <label for="name">Name</label>
+  <input id="name" type="text" formControlName="name" />
+  <label for="desctiption">Description</label>
+  <input id="desctiption" type="text" formControlName="description" />
+  <label for="starting-at">Starting At</label>
+  <input id="starting-at" type="date" formControlName="startingAt" />
+  <label for="closing-at">Closing At</label>
+  <input id="closing-at" type="date" formControlName="closingAt" />
+  <label for="initial-price">Initial price</label>
+  <input id="initial-price" type="number" formControlName="initialPrice" />
+  <label for="minimal-step">Minimal step</label>
+  <input id="minimal-step" type="number" formControlName="minimalStep" />
+
+  <button (click)="submit()">Submit</button>
+</div>

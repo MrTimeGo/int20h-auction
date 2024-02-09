@@ -1,0 +1,37 @@
+@if (lot){
+<div class="flex flex-col gap-4 w-[512px]">
+  <app-image-carousel [images]="lot.images"></app-image-carousel>
+  <div class="gap-2">
+    <h4 class="text-h4 text-gray-80">{{lot.name}}</h4>
+    <p class="text-secondary text-gray-60">{{lot.description}}</p>
+  </div>
+  <div class="flex gap-4">
+    <app-chip
+      [label]="status.label"
+      [backgroundColor]="status.bgColor"
+      [textColor]="status.textColor"></app-chip>
+
+    @if (lot.status === lotStatusEnum.NotStarted) {
+    <app-chip
+      [label]="'Початок ' + (lot.startingAt | date : 'd.MM.yy о H:mm')"></app-chip>
+    } @else if (lot.status === lotStatusEnum.Active) {
+    <app-chip
+      [label]="'Закінчується ' + (lot.closingAt | date : 'd.MM.yy о H:mm')"></app-chip>
+    }
+  </div>
+  <div class="grid grid-flow-col auto-cols-max grid-rows-2 gap-x-10 gap-y-2">
+    <span class="text-gray-40 text-secondary">Стартова ціна</span>
+    <span class="text-gray-40 text-secondary">Крок аукціону</span>
+    <span class="text-gray-80 text-secondary">-</span>
+    <span class="text-gray-80 text-secondary">-</span>
+    <span class="text-gray-80 text-h5">{{lot.initialPrice}} грн</span>
+    <span class="text-gray-80 text-h5">{{lot.minimalStep}} грн</span>
+  </div>
+  @for (tag of lot.tags; track $index) {
+  <app-chip
+    [label]="tag"
+    backgroundColor="gray-70"
+    textColor="white"></app-chip>
+  }
+</div>
+}

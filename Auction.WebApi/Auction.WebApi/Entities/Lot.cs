@@ -15,5 +15,7 @@ public class Lot : BaseEntity
     public ICollection<StaticFile> Images { get; set; } = null!;
 
     public ICollection<Tag> Tags { get; set; } = null!;
+
+    public ICollection<Bet> Bets { get; set; } = null!;
 }
 

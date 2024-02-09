@@ -1,0 +1,20 @@
+<div class="flex flex-col gap-6">
+  <div class="flex justify-between items-center">
+    <h4 class="text-h3 text-gray-80">Лоти</h4>
+    <button
+      class="bg-primary-100 text-white text-buttons rounded-md px-6 py-2"
+      [routerLink]="'/new'">
+      Створити свій слот
+    </button>
+  </div>
+  @if (lots$ | async; as lots) {
+  <div class="gap-6">
+    <!-- <div>Here will be search and so on</div> -->
+    <div class="grid grid-cols-[518px_518px] gap-x-8 gap-y-12 items-top">
+      @for (lot of lots; track $index) {
+      <app-lot-card [lot]="lot"></app-lot-card>
+      }
+    </div>
+  </div>
+  }
+</div>
