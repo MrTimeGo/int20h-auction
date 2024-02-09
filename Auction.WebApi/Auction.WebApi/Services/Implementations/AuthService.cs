@@ -19,21 +19,20 @@ namespace Auction.WebApi.Services.Implementations
             if (user is null || user.RefreshToken != tokens.RefreshToken || user.RefreshTokenExpiresAt <= DateTime.UtcNow)
             {
                 logger.LogError("User was not found with provided access token");
-                throw new Exception("User not found");
+                throw new NotFoundExeption("User not found");
             }
 
             if (user.RefreshToken != tokens.RefreshToken)
             {
                 logger.LogError("Invalid refresh token");
-                throw new Exception("Invalid refresh token");
+                throw new BadRequestException("Invalid refresh token");
             }
 
             if (user.RefreshTokenExpiresAt <= DateTime.UtcNow)
             {
                 logger.LogError("Refresh token expired");
-                throw new Exception("Refresh token expired");
+                throw new BadRequestException("Refresh token expired");
             }
-
 
             return tokenService.GenerateAccessToken(user);
         }
@@ -53,7 +52,7 @@ namespace Auction.WebApi.Services.Implementations
             }
 
             var accessToken = tokenService.GenerateAccessToken(user);
-            var refreshToken = tokenService.GenerateRefreshToken();
+            var refreshToken = TryGetExistingRefreshToken(user) ?? tokenService.GenerateRefreshToken();
             user.RefreshToken = refreshToken.Item1;
             user.RefreshTokenExpiresAt = refreshToken.Item2;
             var updateReult = await userService.UpdateUserAsync(user);
@@ -63,6 +62,16 @@ namespace Auction.WebApi.Services.Implementations
                 AccessToken = accessToken,
                 RefreshToken = refreshToken.Item1
             };
+        }
+
+        private static (string, DateTime)? TryGetExistingRefreshToken(User user)
+        {
+            if (user.RefreshTokenExpiresAt < DateTime.UtcNow)
+            {
+                return (user.RefreshToken, user.RefreshTokenExpiresAt);
+            }
+
+            return null;
         }
 
         public async Task LogoutAsync(ClaimsPrincipal principal)
