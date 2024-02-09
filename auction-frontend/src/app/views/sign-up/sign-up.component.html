@@ -3,6 +3,14 @@
   [subtitle]="step === 1 ? 'Заповніть поля нижче, вказавши Ім`ям та Emale, це допоможе нам в майбутньому звязатися з тобою' : 'Заповніть поля нижче, придумавши пароль та повторивши його для безпеки вашого акаунту'"
   [errors]="[]"
   [step]="step">
+  <ng-container upperAction>
+    <button
+      [disabled]="step === 1"
+      class="text-secondary-buttons text-gray-80 w-fit flex items-center disabled:invisible"
+      (click)="step = 1">
+      <i class="material-icons">arrow_back_ios_new</i> Повернутися назад
+    </button>
+  </ng-container>
   <ng-container formFields>
     @if (step === 1) {
     <app-form-field
