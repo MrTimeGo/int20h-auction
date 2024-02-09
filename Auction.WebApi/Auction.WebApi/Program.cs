@@ -59,7 +59,10 @@ if (builder.Environment.IsDevelopment())
 else
     builder.Services.AddProdAws(builder.Configuration);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ExceptionHandlerFilter>();
+});
 
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddFluentValidationAutoValidation();

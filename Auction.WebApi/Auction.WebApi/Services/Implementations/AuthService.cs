@@ -1,5 +1,6 @@
 ﻿using Auction.WebApi.Dto.Identity;
 using Auction.WebApi.Entities;
+using Auction.WebApi.Expections;
 using Auction.WebApi.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
@@ -26,13 +27,13 @@ namespace Auction.WebApi.Services.Implementations
             var user = await userService.GetUserByEmailOrUsernameAsync(dto.EmailOrUsername);
             if (user is null)
             {
-                throw new Exception("Token expired");
+                throw new UnauthorizedExection("Invalid email/username or password");
             }
             var result = await signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
 
             if (!result.Succeeded)
             {
-                throw new Exception("Token expired");
+                throw new UnauthorizedExection("Invalid email/username or password");
             }
 
             var accessToken = tokenService.GenerateAccessToken(user);
@@ -40,11 +41,6 @@ namespace Auction.WebApi.Services.Implementations
             user.RefreshToken = refreshToken.Item1;
             user.RefreshTokenExpiresAt = refreshToken.Item2;
             var updateReult = await userService.UpdateUserAsync(user);
-
-            if (!updateReult.Succeeded)
-            {
-                throw new Exception("Token expired");
-            }
 
             return new TokensDto
             {
@@ -58,7 +54,7 @@ namespace Auction.WebApi.Services.Implementations
             var user = await userService.GetUserByClaimPrincipalsAsync(principal);
             if (user is null)
             {
-                throw new Exception("Token expired");
+                throw new NotFoundExeption("User was not found");
             }
             user.RefreshToken = string.Empty;
             user.RefreshTokenExpiresAt = DateTime.UtcNow;
@@ -70,7 +66,7 @@ namespace Auction.WebApi.Services.Implementations
             var user = await userService.GetUserByEmailAsync(dto.Email);
             if (user is not null)
             {
-                throw new Exception("Token expired");
+                throw new BadRequestException("User already exists");
             }
             return await userService.CreateUserAsync(new User()
             {
