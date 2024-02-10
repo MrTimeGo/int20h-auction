@@ -1,4 +1,5 @@
 import { Pagination } from ".";
+import { Bet } from "./bet";
 
 export enum LotStatus {
   NotStarted,
@@ -9,6 +10,7 @@ export enum LotStatus {
 export interface Lot {
   id: string;
   name: string;
+  author: string;
   description: string;
   startingAt: Date;
   closingAt: Date;
@@ -17,6 +19,10 @@ export interface Lot {
   status: LotStatus;
   images: string[];
   tags: string[];
+}
+
+export interface LotDetailed extends Lot {
+  bets: Bet[];
 }
 
 export interface LotFilter {

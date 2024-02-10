@@ -12,6 +12,8 @@ export class ImageCarouselComponent {
 
   @Input() images: string[] = []
 
+  @Input() height = '';
+
   next() {
     this.currentImageIndex = (this.currentImageIndex + 1) % this.images.length
   }
