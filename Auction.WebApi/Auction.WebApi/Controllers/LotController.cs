@@ -42,4 +42,10 @@ public class LotController(ILotService lotService) : ControllerBase
         await lotService.MakeBet(id, dto);
         return Ok();
     }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<LotDetailedDto>> UpdateLotById([FromRoute] Guid id, [FromBody] CreateLotDto dto)
+    {
+        return Ok(await lotService.UpdateLotAsync(id, dto));
+    }
 }

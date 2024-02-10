@@ -168,4 +168,47 @@ public class LotService(AuctionContext context, ICurrentUserService currentUserS
         context.Bets.Add(bet);
         await context.SaveChangesAsync();
     }
+
+    public async Task<LotDto> UpdateLotAsync(Guid id, CreateLotDto dto)
+    {
+        var existingEntity = await context.Lots.FirstOrDefaultAsync(l => l.Id == id);
+
+        if (existingEntity is null)
+        {
+            throw new NotFoundExeption($"Lot with id {id} not found");
+        }
+
+        if (existingEntity.StartingAt < DateTime.UtcNow)
+        {
+            throw new BadRequestException($"Can't update lot after its beginning");
+        }
+
+        existingEntity.Name = dto.Name;
+        existingEntity.Description = dto.Description;
+        existingEntity.InitialPrice = dto.InitialPrice;
+        existingEntity.MinimalStep = dto.MinimalStep;
+        existingEntity.StartingAt = dto.StartingAt;
+        existingEntity.ClosingAt = dto.ClosingAt;
+
+
+        existingEntity.Images = await context.StaticFiles.Where(sf => dto.Images.Contains(sf.Id)).ToListAsync();
+
+
+        var existingTags = await context.Tags.Where(x => dto.Tags.Any(y => x.Name.ToLower() == y.ToLower())).ToListAsync();
+        var notExistingTags = dto.Tags.Where(x => !existingTags.Any(y => y.Name == x)).ToList();
+
+        if (notExistingTags.Count != 0)
+        {
+            var newTags = await CreateTags(notExistingTags);
+            existingTags.AddRange(newTags);
+        }
+
+        existingEntity.Tags = existingTags;
+
+        var result = context.Lots.Update(existingEntity);
+
+        await context.SaveChangesAsync();
+
+        return mapper.Map<LotDto>(result.Entity)!;
+    }
 }

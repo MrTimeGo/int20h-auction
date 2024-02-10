@@ -9,6 +9,7 @@ export const routes: Routes = [
   { path: '', redirectTo: '/sign-in', pathMatch: 'full' },
   { path: 'lots', component: LotComponent },
   { path: 'lots/:id', component: LotDetailsComponent },
+  { path: 'edit/:id', component: NewLotComponent },
   { path: 'new', component: NewLotComponent },
   { path: 'sign-in', component: SignInComponent },
   { path: 'sign-up', component: SignUpComponent },
