@@ -34,7 +34,7 @@ builder.Services.AddIdentityCore<User>(options =>
     options.Password.RequiredUniqueChars = 1;
 
     // User settings.
-    options.User.AllowedUserNameCharacters = options.User.AllowedUserNameCharacters + ' ';
+    options.User.AllowedUserNameCharacters = string.Empty;
 
     options.User.RequireUniqueEmail = true;
 })
