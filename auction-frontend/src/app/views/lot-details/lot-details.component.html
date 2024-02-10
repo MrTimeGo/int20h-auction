@@ -1,6 +1,11 @@
 @if (lot$ | async; as lot) {
 <div class="grid grid-cols-2 gap-x-8 gap-y-6">
   <div class="flex flex-col gap-6">
+    <button
+      class="text-secondary-buttons text-gray-80 w-fit flex items-center disabled:invisible"
+      [routerLink]="'/lots'">
+      <i class="material-icons">arrow_back_ios_new</i> Повернутися назад
+    </button>
     <div class="flex flex-col gap-4">
       <div class="flex flex-col gap-2">
         <h2 class="text-h1 text-gray-80">{{ lot.name }}</h2>
@@ -13,23 +18,28 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-4">
-      <div
-        class="border border-gray-20 rounded-lg flex justify-center items-center gap-6 px-2 py-4">
-        <span class="text-h5 text-gray-40">Стартова ціна</span>
-        <span>-</span>
-        <span class="text-h5 text-gray-70">{{ lot.initialPrice }} грн</span>
-      </div>
-      <div
-        class="border border-gray-20 rounded-lg flex justify-center items-center gap-6 px-2 py-4">
-        <span class="text-h5 text-gray-40">Мінімальний крок</span>
-        <span>-</span>
-        <span class="text-h5 text-gray-70">{{ lot.minimalStep }} грн</span>
-      </div>
+    <div class="grid grid-rows-4 grid-flow-col gap-y-12">
+      <span class="text-h5 text-gray-40">Стартова ціна</span>
+      <span class="text-h5 text-gray-40">Мінімальний крок</span>
+      <span class="text-h5 text-gray-40"
+        >{{ lot.status === lotStatus.NotStarted ? 'Дата початку' : 'Дата закінчення'}}
+      </span>
+      <span class="text-h5 text-gray-40">Автор</span>
+      <span>-</span>
+      <span>-</span>
+      <span>-</span>
+      <span>-</span>
+      <span class="text-h5 text-gray-70">{{ lot.initialPrice }} грн</span>
+      <span class="text-h5 text-gray-70">{{ lot.minimalStep }} грн</span>
+      <span class="text-h5 text-gray-70">
+        {{ (lot.status === lotStatus.NotStarted ? lot.startingAt :
+        lot.closingAt) | date : 'dd:MM:yy' }} грн
+      </span>
+      <span class="text-h5 text-gray-70">{{ lot.author }}</span>
     </div>
   </div>
   <div>
-    <app-image-carousel></app-image-carousel>
+    <app-image-carousel height="518"></app-image-carousel>
   </div>
   <div class="flex flex-col gap-2">
     <h4 class="text-h4 text-gray-80">Учасники</h4>
@@ -37,7 +47,7 @@
       class="flex gap-4 flex-wrap rounded-2xl p-6 border border-gray-20 justify-center">
       @for (bet of members; track index; let index = $index) {
       <span class="text-h5 text-{{memberColors[bet]}}"> {{ bet }} </span>
-      @if (index !== lot.bets.length - 1) {
+      @if (index !== members.length - 1) {
       <span class="text-h5 text-gray-80">-</span>
       } } @empty {
       <span class="text-body text-gray-80">Ще немає учасників</span>

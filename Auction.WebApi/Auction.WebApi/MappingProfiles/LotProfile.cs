@@ -15,7 +15,8 @@ public class LotProfile : Profile
                 (l.StartingAt > DateTime.UtcNow ? LotStatus.NotStarted : LotStatus.Closed)
             ))
             .ForMember(l => l.Tags, (options) => options.MapFrom(l => l.Tags.Select(t => t.Name)))
-            .ForMember(l => l.Images, (options) => options.MapFrom(l => l.Images.Select(t => t.FilePath)));
+            .ForMember(l => l.Images, (options) => options.MapFrom(l => l.Images.Select(t => t.FilePath)))
+            .ForMember(l => l.Author, (opions) => opions.MapFrom(l => l.Author.UserName));
 
         CreateMap<Lot, LotDetailedDto>()
             .ForMember(l => l.status, (options) => options.MapFrom(l =>

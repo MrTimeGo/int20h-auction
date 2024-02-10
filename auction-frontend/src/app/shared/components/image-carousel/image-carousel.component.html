@@ -1,5 +1,6 @@
 <div
-  class="rounded-lg relative h-[300px] bg-gray-10 bg-no-repeat bg-center bg-cover shadow-inner-xl"
+  class="rounded-lg relative bg-gray-10 bg-no-repeat bg-center bg-cover shadow-inner-xl"
+  [style.height]="height + 'px'"
   [style.background-image]=" images.length ? 'url(' + images[currentImageIndex] + ')' : ''">
   @if(images.length > 1) {
   <button class="absolute left-1 top-1/2 -translate-y-1/2" (click)="previous()">

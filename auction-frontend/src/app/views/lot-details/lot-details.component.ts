@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { ButtonComponent } from "../../shared/components/controls/button/button.component";
 import { FormFieldComponent } from "../../shared/components/controls/form-field/form-field.component";
 import { LotService } from '../../shared/services';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { catchError, of, switchMap, tap } from 'rxjs';
 import { CountdownComponent } from 'ngx-countdown';
 import { LotStatus } from '../../shared/models';
@@ -17,7 +17,7 @@ import { FormControl, Validators } from '@angular/forms';
   standalone: true,
   templateUrl: './lot-details.component.html',
   styleUrl: './lot-details.component.scss',
-  imports: [ImageCarouselComponent, ChipComponent, CommonModule, ButtonComponent, FormFieldComponent, CountdownComponent]
+  imports: [ImageCarouselComponent, ChipComponent, CommonModule, ButtonComponent, FormFieldComponent, CountdownComponent, RouterModule]
 })
 export class LotDetailsComponent {
   lotService = inject(LotService);

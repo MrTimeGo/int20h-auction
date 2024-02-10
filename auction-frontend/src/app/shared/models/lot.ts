@@ -10,6 +10,7 @@ export enum LotStatus {
 export interface Lot {
   id: string;
   name: string;
+  author: string;
   description: string;
   startingAt: Date;
   closingAt: Date;

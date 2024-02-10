@@ -4,6 +4,7 @@ public class LotDto
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+    public string Author { get; set; } = string.Empty;
     public DateTime StartingAt { get; set; }
     public DateTime ClosingAt { get; set; }
     public decimal InitialPrice { get; set; }
