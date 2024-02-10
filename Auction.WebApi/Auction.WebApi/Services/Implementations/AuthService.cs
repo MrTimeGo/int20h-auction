@@ -52,26 +52,34 @@ namespace Auction.WebApi.Services.Implementations
             }
 
             var accessToken = tokenService.GenerateAccessToken(user);
-            var refreshToken = TryGetExistingRefreshToken(user) ?? tokenService.GenerateRefreshToken();
-            user.RefreshToken = refreshToken.Item1;
-            user.RefreshTokenExpiresAt = refreshToken.Item2;
-            var updateReult = await userService.UpdateUserAsync(user);
+
+            if (!TryGetExistingRefreshToken(user, out string refreshToken))
+            {
+                var refreshTokenWithExp = tokenService.GenerateRefreshToken();
+                refreshToken = refreshTokenWithExp.Item1;
+                user.RefreshToken = refreshTokenWithExp.Item1;
+                user.RefreshTokenExpiresAt = refreshTokenWithExp.Item2;
+
+                await userService.UpdateUserAsync(user);
+            }
 
             return new TokensDto
             {
                 AccessToken = accessToken,
-                RefreshToken = refreshToken.Item1
+                RefreshToken = refreshToken
             };
         }
 
-        private static (string, DateTime)? TryGetExistingRefreshToken(User user)
+        private static bool TryGetExistingRefreshToken(User user, out string token)
         {
             if (user.RefreshToken == "" || user.RefreshTokenExpiresAt > DateTime.UtcNow)
             {
-                return null;
+                token = null!;
+                return false;
             }
 
-            return (user.RefreshToken, user.RefreshTokenExpiresAt);
+            token = user.RefreshToken;
+            return true;
         }
 
         public async Task LogoutAsync(ClaimsPrincipal principal)
