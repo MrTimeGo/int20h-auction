@@ -53,4 +53,4 @@ export interface LotParams {
   pagination: Pagination | null
 }
 
-export type CreateLot = Omit<Lot, 'id' | 'status'>
+export type CreateLot = Omit<Lot, 'id' | 'status' | 'author'>
