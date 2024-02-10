@@ -16,7 +16,6 @@ public class LoginDtoValidator : AbstractValidator<LoginDto>
 
         RuleFor(u => u.Password)
             .NotNull()
-            .MinimumLength(6)
-            .Matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[^a-zA-Z\\d\\s:])(?=.*[A-Z]).{6,}$");
+            .MinimumLength(6);
     }
 }
