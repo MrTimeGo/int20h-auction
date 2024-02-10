@@ -1,6 +1,7 @@
 <div
   class="rounded-lg relative h-[300px] bg-gray-10 bg-no-repeat bg-center bg-cover shadow-inner-xl"
-  [style.background-image]=" 'url(' + images[currentImageIndex] + ')'">
+  [style.background-image]=" images.length ? 'url(' + images[currentImageIndex] + ')' : ''">
+  @if(images.length > 1) {
   <button class="absolute left-1 top-1/2 -translate-y-1/2" (click)="previous()">
     <i class="material-icons text-white">arrow_back_ios_new</i>
   </button>
@@ -8,4 +9,5 @@
   <button class="absolute right-1 top-1/2 -translate-y-1/2" (click)="next()">
     <i class="material-icons text-white">arrow_forward_ios_new</i>
   </button>
+  }
 </div>

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, map } from 'rxjs';
-import { CreateLot, Lot, LotParams, PaginationResult } from '../models';
+import { CreateLot, Lot, LotDetailed, LotParams, PaginationResult } from '../models';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../../environments/environment';
 
@@ -67,5 +67,9 @@ export class LotService {
     }).subscribe();
     
     this.applyParams(this.params);
+  }
+
+  getLotDetailed(id: string) {
+    return this.http.get<LotDetailed>(`${this.baseUrl}/${id}`);
   }
 }

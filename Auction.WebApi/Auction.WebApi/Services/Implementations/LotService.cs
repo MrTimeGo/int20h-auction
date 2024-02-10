@@ -3,7 +3,9 @@ using Auction.WebApi.Dto;
 using Auction.WebApi.Dto.Lot;
 using Auction.WebApi.Entities;
 using Auction.WebApi.Services.Interfaces;
+using Auction.WebApi.Expections;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Auction.WebApi.Services.Implementations;
@@ -120,5 +122,17 @@ public class LotService(AuctionContext context, ICurrentUserService currentUserS
         {
             return query.OrderByDescending(l => sort.Type == LotSortType.StartingAt ? l.StartingAt : l.ClosingAt);
         }
+    }
+
+    public async Task<LotDetailedDto> GetLotByIdAsync(Guid id)
+    {
+        var lot = await context.Lots
+            .Include(l => l.Tags)
+            .Include(l => l.Bets.OrderBy(b => b.CreatedAt))
+            .Include(l => l.Images)
+            .ProjectTo<LotDetailedDto>(mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(l => l.Id == id);
+
+        return lot ?? throw new NotFoundExeption($"Lot with id {id} not found");
     }
 }

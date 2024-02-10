@@ -1,6 +1,9 @@
-@if (lot){
-<div class="flex flex-col gap-4 w-[512px]">
-  <app-image-carousel [images]="lot.images"></app-image-carousel>
+@if (lot) {
+<div
+  class="flex flex-col gap-4 w-[512px] hover:drop-shadow-lg cursor-pointer"
+  [routerLink]="lot.id">
+  <app-image-carousel
+    [images]="!!lot.images[0] ? [lot.images[0]] : []"></app-image-carousel>
   <div class="gap-2">
     <h4 class="text-h4 text-gray-80">{{lot.name}}</h4>
     <p class="text-secondary text-gray-60">{{lot.description}}</p>

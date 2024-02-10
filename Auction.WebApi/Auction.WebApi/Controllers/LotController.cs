@@ -27,4 +27,10 @@ public class LotController(ILotService lotService) : ControllerBase
     {
         return Ok(await lotService.CreateLotAsync(dto));
     }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<LotDetailedDto>> GetLotById([FromRoute] Guid id)
+    {
+        return Ok(await lotService.GetLotByIdAsync(id));
+    }
 }
