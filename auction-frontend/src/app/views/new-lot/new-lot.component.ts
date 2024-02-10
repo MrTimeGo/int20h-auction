@@ -7,9 +7,10 @@ import {
   FormFieldComponent,
   ImageCarouselComponent
 } from '../../shared/components';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { mergeMap, of, tap } from 'rxjs';
 import { formatDate } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-new-lot',
@@ -28,13 +29,17 @@ export class NewLotComponent {
   lotService = inject(LotService);
   fb = inject(FormBuilder);
   route = inject(ActivatedRoute);
+  router = inject(Router);
+  toastr = inject(ToastrService)
 
-  mode: 'new' | 'edit' = 'new' 
+  mode: 'new' | 'edit' = 'new';
+  lotId: string | null = null;
 
   constructor() {
     this.route.paramMap.pipe(
       tap((paramMap) => {
         this.mode = paramMap.has('id') ? 'edit' : 'new'
+        this.lotId = paramMap.get('id');
       }),
       mergeMap((paramMap) =>
         paramMap.has('id')
@@ -98,11 +103,35 @@ export class NewLotComponent {
   }
 
   submit() {
-    this.lotService.createLot({
+    const lot = {
       ...this.form.value,
-      tags: this.form.value.tags?.trim().split(' '),
+      tags: this.form.value.tags?.trim().split(' ').filter(t => !!t),
       startingAt: new Date(this.form.value.startingAt as string),
         closingAt: new Date(this.form.value.closingAt as string),
-    } as CreateLot);
+    } as CreateLot
+
+    if (this.mode == 'new') {
+      this.lotService.createLot(lot).subscribe({
+        next: (lot) => {
+          this.toastr.success('Лот було створено');
+          this.router.navigate(['/lots', lot.id])
+        },
+        error: (err) => {
+          console.error(err);
+          this.toastr.error('Щось пішло не так');
+        }
+      });
+    } else {
+      this.lotService.updateLot(this.lotId!, lot).subscribe({
+        next: (lot) => {
+          this.toastr.success('Зміни збережено');
+          this.router.navigate(['/lots', lot.id])
+        },
+        error: (err) => {
+          console.error(err);
+          this.toastr.error('Щось пішло не так');
+        }
+      });
+    }
   }
 }
