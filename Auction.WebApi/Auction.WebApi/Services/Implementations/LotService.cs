@@ -7,6 +7,7 @@ using Auction.WebApi.Expections;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using Auction.WebApi.Dto.Bet;
 
 namespace Auction.WebApi.Services.Implementations;
 
@@ -128,11 +129,43 @@ public class LotService(AuctionContext context, ICurrentUserService currentUserS
     {
         var lot = await context.Lots
             .Include(l => l.Tags)
-            .Include(l => l.Bets.OrderBy(b => b.CreatedAt))
+            .Include(l => l.Bets.OrderByDescending(b => b.Amount))
             .Include(l => l.Images)
             .ProjectTo<LotDetailedDto>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(l => l.Id == id);
 
         return lot ?? throw new NotFoundExeption($"Lot with id {id} not found");
+    }
+
+    public async Task MakeBet(Guid lotId, MakeBetDto dto)
+    {
+        var lot = await context.Lots.FirstOrDefaultAsync(l => l.Id == lotId);
+
+        if (lot is null)
+        {
+            throw new NotFoundExeption($"Lot with id {lotId} not found");
+        }
+
+        var latestBet = await context.Bets.Where(b => b.LotId == lot.Id).OrderByDescending(b => b.Amount).FirstOrDefaultAsync();
+
+        if (dto.Amount < (lot.InitialPrice + lot.MinimalStep))
+        {
+            throw new ConfictExeption("Amount of new bet is lesser then initial price + minimal step");
+        }
+
+        if (latestBet is not null && (latestBet.Amount + lot.MinimalStep) > dto.Amount)
+        {
+            throw new ConfictExeption("Amount of new bet is lesser then latest amount + minimal step");
+        }
+
+        var bet = new Bet()
+        {
+            AuthorId = currentUserService.CurrentUserId!.Value,
+            Amount = dto.Amount,
+            LotId = lot.Id
+        };
+
+        context.Bets.Add(bet);
+        await context.SaveChangesAsync();
     }
 }

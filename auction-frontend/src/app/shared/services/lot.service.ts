@@ -72,4 +72,8 @@ export class LotService {
   getLotDetailed(id: string) {
     return this.http.get<LotDetailed>(`${this.baseUrl}/${id}`);
   }
+
+  makeBet(lotId: string, amount: number) {
+    return this.http.post(`${this.baseUrl}/${lotId}/make-bet`, { amount });
+  }
 }

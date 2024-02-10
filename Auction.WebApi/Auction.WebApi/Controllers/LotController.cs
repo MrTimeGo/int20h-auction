@@ -1,4 +1,5 @@
 ﻿using Auction.WebApi.Dto;
+using Auction.WebApi.Dto.Bet;
 using Auction.WebApi.Dto.Lot;
 using Auction.WebApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -32,5 +33,13 @@ public class LotController(ILotService lotService) : ControllerBase
     public async Task<ActionResult<LotDetailedDto>> GetLotById([FromRoute] Guid id)
     {
         return Ok(await lotService.GetLotByIdAsync(id));
+    }
+
+    [HttpPost("{id}/make-bet")]
+    [Authorize]
+    public async Task<IActionResult> MakeBet([FromBody] MakeBetDto dto, [FromRoute] Guid id)
+    {
+        await lotService.MakeBet(id, dto);
+        return Ok();
     }
 }

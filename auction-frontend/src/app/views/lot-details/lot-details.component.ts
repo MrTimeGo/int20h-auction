@@ -9,6 +9,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, of, switchMap, tap } from 'rxjs';
 import { CountdownComponent } from 'ngx-countdown';
 import { LotStatus } from '../../shared/models';
+import { ToastrService } from 'ngx-toastr';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-lot-details',
@@ -21,6 +23,7 @@ export class LotDetailsComponent {
   lotService = inject(LotService);
   router = inject(Router);
   route = inject(ActivatedRoute);
+  toastr = inject(ToastrService)
 
   lotStatus = LotStatus;
 
@@ -33,7 +36,12 @@ export class LotDetailsComponent {
         this.remainedTime = (new Date(lot.closingAt).getTime() - Date.now()) / 1000;
       }
 
+      const minimumBet = (lot.bets.length ? lot.bets[0].amount : lot.initialPrice) + lot.minimalStep
+
+      this.betControl = new FormControl(null, {validators: [Validators.required, Validators.min(minimumBet)] })
+
       const members = [...new Set( lot.bets.map(b => b.author))];
+
 
       // TODO: review
       members.reduce((colors, member, i) => {
@@ -47,8 +55,36 @@ export class LotDetailsComponent {
     })
   );
 
+  get members() {
+    return Object.keys(this.memberColors);
+  }
+
+  betControl?: FormControl;
+
+  get betErrors() {
+    const errors: string[] = [];
+
+    if (this.betControl?.hasError('min')) {
+      errors.push('Ставка замала');
+    }
+
+    return errors;
+  }
+
   remainedTime: number = 0;
 
   memberColors: Record<string, string> = {};
   colorPalette = ['primary-100', 'yellow', 'green', 'red'];
+
+  makeBet(lotId: string, amount: number) {
+    this.lotService.makeBet(lotId, amount).subscribe({
+      next: () => {
+        this.toastr.success('Ставка прийнята')
+      },
+      error: (err) => {
+        this.toastr.error('Щось пішло не так');
+        console.error(err);
+      }
+    });
+  }
 }
