@@ -11,7 +11,7 @@
         <h2 class="text-h1 text-gray-80">{{ lot.name }}</h2>
         <p class="text-body text-gray-70">{{ lot.description }}</p>
       </div>
-      <div class="flex flex-wrap">
+      <div class="flex flex-wrap gap-4">
         @for (tag of lot.tags; track $index) {
         <app-chip backgroundColor="primary-80" [label]="tag"></app-chip>
         }
