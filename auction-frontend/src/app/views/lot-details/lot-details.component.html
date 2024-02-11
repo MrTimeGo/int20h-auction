@@ -36,6 +36,14 @@
       </span>
       <span class="text-h5 text-gray-70">{{ lot.author }}</span>
     </div>
+    @if (lot.author === currentUser?.username && lot.status ===
+    lotStatus.NotStarted) {
+    <button
+      class="rounded-lg text-h5 text-gray-70 px-2 py-4 border-2 border-gray-40 hover:drop-shadow"
+      [routerLink]="['/edit', lot.id]">
+      Редагувати лот
+    </button>
+    }
   </div>
 
   <div>
@@ -81,7 +89,7 @@
           <span class="text-body text-gray-60 mx-auto">
             Аукціон не активний
           </span>
-          } @else if (meInMembers | async) {
+          } @else if (meInMembers) {
           <app-input
             class="w-full"
             placeholder="Повідомлення"
