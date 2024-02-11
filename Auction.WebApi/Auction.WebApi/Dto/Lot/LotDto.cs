@@ -13,9 +13,11 @@ public class LotDto
     public LotStatus status { get; set; }
 }
 
+[Flags]
 public enum LotStatus
 {
+    None,
     NotStarted,
     Active,
-    Closed
+    Closed = 4
 }

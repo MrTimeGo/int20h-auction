@@ -3,7 +3,8 @@
 public class LotSort
 {
     public LotSortType? Type { get; set; }
-    public LotSortOrder SortOrder { get; set; }
+    public LotSortOrder? SortOrder { get; set; }
+    public BetStepOrder? BetStepOrder { get; set; }
 }
 
 public enum LotSortType
@@ -13,6 +14,12 @@ public enum LotSortType
 }
 
 public enum LotSortOrder
+{
+    Ascending,
+    Descending,
+}
+
+public enum BetStepOrder
 {
     Ascending,
     Descending,

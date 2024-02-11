@@ -1,0 +1,65 @@
+<form
+  [formGroup]="group"
+  (mousedown)="isFocused=true"
+  (mouseleave)="isFocused=false"
+  class="flex flex-col gap-0.5 rounded-lg px-4 py-3 w-max drop-shadow-md bg-white border border-gray-20 hover:border-[1.5px] hover:border-primary-90 focus:border-primary-100">
+  <span class="flex gap-[68px]">
+    <span
+      class="focus-within:outline-none w-full placeholder-gray-70 placeholder-body text-body text-gray-80">
+      Сортувати за
+    </span>
+    @if(!isFocused){
+    <i class="material-icons">keyboard_arrow_down</i>
+    } @else {
+    <i class="material-icons">keyboard_arrow_up</i>
+    }
+  </span>
+  @if (isFocused) {
+  <span class="flex flex-col gap-2">
+    <hr class="border border-primary-80" />
+    <span
+      class="flex justify-center text-gray-30 hover:text-gray-40 hover:cursor-pointer"
+      (mousedown)="onClearSort()"
+      >Не сортувати</span
+    >
+    <span class="flex flex-col gap-2">
+      <label class="flex gap-3 flex-row-reverse justify-between">
+        <input
+          type="radio"
+          value="{{LotSortOrder.Ascending}}"
+          formControlName="sortOrder"
+          class="w-6 h-6 bg-gray-10"
+          (change)="onSelect($event, true)" />
+        <span>Спочатку нові</span>
+      </label>
+      <label class="flex gap-3 flex-row-reverse justify-between">
+        <input
+          type="radio"
+          value="{{LotSortOrder.Descending}}"
+          formControlName="sortOrder"
+          class="w-6 h-6 bg-gray-10"
+          (change)="onSelect($event, true)" />
+        <span>Спочатку старі</span>
+      </label>
+      <label class="flex gap-3 flex-row-reverse justify-between">
+        <input
+          type="radio"
+          value="{{BetStepOrder.Descending}}"
+          formControlName="betStepOrder"
+          class="w-6 h-6 bg-gray-10"
+          (change)="onSelect($event, false)" />
+        <span>Великий крок ставки</span>
+      </label>
+      <label class="flex gap-3 flex-row-reverse justify-between">
+        <input
+          type="radio"
+          value="{{BetStepOrder.Ascending}}"
+          formControlName="betStepOrder"
+          class="w-6 h-6 bg-gray-10"
+          (change)="onSelect($event, false)" />
+        <span>Маленький крок ставки</span>
+      </label>
+    </span>
+  </span>
+  }
+</form>

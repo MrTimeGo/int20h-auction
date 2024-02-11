@@ -37,19 +37,31 @@ export class LotService {
 
     const queryParams = []
     if (params.filters) {
-      queryParams.push(...Object.entries(params.filters).map(([key, value]) => `${key}=${value}`));
+      queryParams.push(
+        ...Object.entries(params.filters)
+          .filter(([, value]) => value !== null)
+          .map(([key, value]) => `${key}=${value}`)
+      );
     }
 
     if (params.sort) {
-      queryParams.push(...Object.entries(params.sort).map(([key, value]) => `${key}=${value}`));
+      queryParams.push(
+        ...Object.entries(params.sort)
+          .filter(([, value]) => value !== null)
+          .map(([key, value]) => `${key}=${value}`)
+      );
     }
 
     if (params.searchTerm) {
-      queryParams.push(`searchTerm=${params.searchTerm}`);
+      queryParams.push(`searchTerm=${encodeURIComponent(params.searchTerm)}`);
     }
 
     if (params.pagination) {
-      queryParams.push(...Object.entries(params.pagination).map(([key, value]) => `${key}=${value}`));
+      queryParams.push(
+        ...Object.entries(params.pagination)
+          .filter(([, value]) => value !== null)
+          .map(([key, value]) => `${key}=${value}`)
+      );
     }
 
     const queryString = queryParams.join('&');

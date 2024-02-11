@@ -1,0 +1,68 @@
+<form
+  [formGroup]="group"
+  (mousedown)="isFocused=true"
+  (mouseleave)="isFocused=false"
+  class="flex flex-col gap-0.5 rounded-lg px-4 py-3 w-max drop-shadow-md bg-white border border-gray-20 hover:border-[1.5px] hover:border-primary-90 focus:border-primary-100">
+  <span class="flex gap-[68px]">
+    <span
+      class="focus-within:outline-none w-full placeholder-gray-70 placeholder-body text-body text-gray-80">
+      Додати фільтр
+    </span>
+    @if(!isFocused){
+    <i class="material-icons">add</i>
+    } @else {
+    <i class="material-icons">check</i>
+    }
+  </span>
+  @if (isFocused || group.controls['myLots'].value ||
+  group.controls['myBets'].value || group.controls['lotStatus'].value) {
+  <span class="flex flex-col gap-2">
+    <hr class="border border-primary-80" />
+    <span class="flex flex-col gap-2">
+      <span class="flex gap-2">
+        <input
+          type="checkbox"
+          id="lot"
+          formControlName="myLots"
+          class="w-6 h-6 rounded-[4px] checked:bg-primary-90" />
+        <label for="lot">Мої лоти</label>
+      </span>
+      <span class="flex gap-2">
+        <input
+          type="checkbox"
+          id="bet"
+          formControlName="myBets"
+          class="w-6 h-6 rounded-[4px] checked:bg-primary-90" />
+        <label for="bet">Мої ставки</label>
+      </span>
+      <span class="flex gap-2">
+        <input
+          type="checkbox"
+          id="status-active"
+          class="w-6 h-6 rounded-[4px] checked:bg-primary-90"
+          [value]="activeStatus"
+          (change)="onCheckChange($event, LotStatus.Active);" />
+        <label for="status-active">Аукціон почався</label>
+      </span>
+      <span class="flex gap-2">
+        <input
+          type="checkbox"
+          id="status-not-started"
+          class="w-6 h-6 rounded-[4px] checked:bg-primary-90"
+          [value]="notStartedStatus"
+          (change)="onCheckChange($event, LotStatus.NotStarted);" />
+        <label for="status-not-started">Аукціон скоро почнеться</label>
+      </span>
+      <span class="flex gap-2">
+        <input
+          type="checkbox"
+          id="status-finished"
+          class="w-6 h-6 rounded-[4px] checked:bg-primary-90"
+          [value]="closedStatus"
+          (change)="onCheckChange($event, LotStatus.Closed);" />
+        <label for="status-finished">Аукціон закінчився</label>
+      </span>
+    </span>
+  </span>
+  }
+</form>

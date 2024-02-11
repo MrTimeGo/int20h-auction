@@ -18,70 +18,95 @@ const colors = {
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./src/**/*.{html,ts}",
-  ],
+  content: ['./src/**/*.{html,ts}'],
   theme: {
     colors,
     fontSize: {
       /* 1rem = 16px */
-      'h1': ['58px', {
-        lineHeight: '110%',
-        letterSpacing: '0',
-        fontWeight: '700',
-      }],
-      'h2': ['42px', {
-        lineHeight: '110%',
-        letterSpacing: '0',
-        fontWeight: '700',
-      }],
-      'h3': ['34px', {
-        lineHeight: '110%',
-        letterSpacing: '0',
-        fontWeight: '600',
-      }],
-      'h4': ['26px', {
-        lineHeight: '120%',
-        letterSpacing: '0',
-        fontWeight: '500',
-      }],
-      'h5': ['18px', {
-        lineHeight: '130%',
-        letterSpacing: '0',
-        fontWeight: '500',
-      }],
-      'body': ['1rem', {
-        lineHeight: '140%',
-        letterSpacing: '0',
-        fontWeight: '400',
-      }],
-      'secondary': ['14px', {
-        lineHeight: '140%',
-        letterSpacing: '0',
-        fontWeight: '500',
-      }],
-      'buttons': ['22px', {
-        lineHeight: '130%',
-        letterSpacing: '0',
-        fontWeight: '500',
-      }],
-      'secondary-buttons': ['1rem', {
-        lineHeight: '140%',
-        letterSpacing: '0',
-        fontWeight: '500',
-      }],
+      h1: [
+        '58px',
+        {
+          lineHeight: '110%',
+          letterSpacing: '0',
+          fontWeight: '700'
+        }
+      ],
+      h2: [
+        '42px',
+        {
+          lineHeight: '110%',
+          letterSpacing: '0',
+          fontWeight: '700'
+        }
+      ],
+      h3: [
+        '34px',
+        {
+          lineHeight: '110%',
+          letterSpacing: '0',
+          fontWeight: '600'
+        }
+      ],
+      h4: [
+        '26px',
+        {
+          lineHeight: '120%',
+          letterSpacing: '0',
+          fontWeight: '500'
+        }
+      ],
+      h5: [
+        '18px',
+        {
+          lineHeight: '130%',
+          letterSpacing: '0',
+          fontWeight: '500'
+        }
+      ],
+      body: [
+        '1rem',
+        {
+          lineHeight: '140%',
+          letterSpacing: '0',
+          fontWeight: '400'
+        }
+      ],
+      secondary: [
+        '14px',
+        {
+          lineHeight: '140%',
+          letterSpacing: '0',
+          fontWeight: '500'
+        }
+      ],
+      buttons: [
+        '22px',
+        {
+          lineHeight: '130%',
+          letterSpacing: '0',
+          fontWeight: '500'
+        }
+      ],
+      'secondary-buttons': [
+        '1rem',
+        {
+          lineHeight: '140%',
+          letterSpacing: '0',
+          fontWeight: '500'
+        }
+      ]
     },
     extend: {
-      'boxShadow': {
-        'inner-xl': 'inset 0 0 48px 0 rgba(0, 0, 0, 0.16), inset 0 0 48px 0 rgba(0, 0, 0, 0.16)'
+      boxShadow: {
+        'inner-xl':
+          'inset 0 0 48px 0 rgba(0, 0, 0, 0.16), inset 0 0 48px 0 rgba(0, 0, 0, 0.16)'
       }
-    },
+    }
   },
   plugins: [],
   safelist: [
-    ...Object.keys(colors).map(x => `text-${x}`),
-    ...Object.keys(colors).map(x => `bg-${x}`),
+    ...Object.keys(colors).map((x) => `text-${x}`),
+    ...Object.keys(colors).map((x) => `bg-${x}`)
     //...Object.keys(colors).map(x => `border-${x}`),
   ]
-    
-}
+};

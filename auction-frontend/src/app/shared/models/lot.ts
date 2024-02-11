@@ -1,9 +1,10 @@
 import { Pagination } from ".";
 
 export enum LotStatus {
-  NotStarted,
-  Active,
-  Closed
+  None = 0,
+  NotStarted = 1,
+  Active = 2,
+  Closed = 4
 }
 
 export interface Lot {
@@ -22,12 +23,12 @@ export interface Lot {
 export interface LotFilter {
   myLots: boolean
   myBets: boolean;
-  lotStatus: LotStatus;
+  lotStatus: LotStatus | null;
 }
 
 export interface LotSort {
-  type: LotSortType;
-  sortOrder: LotSortOrder;
+  type: LotSortType | null;
+  sortOrder: LotSortOrder | null;
 }
 
 export enum LotSortType {
@@ -36,6 +37,11 @@ export enum LotSortType {
 }
 
 export enum LotSortOrder {
+  Ascending,
+  Descending
+}
+
+export enum BetStepOrder {
   Ascending,
   Descending
 }
