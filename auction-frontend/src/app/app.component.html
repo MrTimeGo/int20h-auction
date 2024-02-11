@@ -1,4 +1,13 @@
-<app-header></app-header>
-<main class="py-8">
-  <router-outlet />
-</main>
+<div class="flex flex-col h-full">
+  <div class="grid grid-cols-10 gap-x-8">
+    <div></div>
+    <app-header class="col-span-8 px-12"></app-header>
+    <div></div>
+    <div></div>
+    <main class="py-8 col-span-8 px-12 ">
+      <router-outlet />
+    </main>
+    <div></div>
+    <app-footer class="col-span-10"></app-footer>
+  </div>
+</div>
