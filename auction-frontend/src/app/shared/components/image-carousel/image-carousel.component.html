@@ -10,5 +10,11 @@
   <button class="absolute right-1 top-1/2 -translate-y-1/2" (click)="next()">
     <i class="material-icons text-white">arrow_forward_ios_new</i>
   </button>
+  } @if(editMode && images.length) {
+  <button
+    class="absolute right-0 top-0 translate-y-1/2 -translate-x-1/2"
+    (click)="deleteClick.emit(images[currentImageIndex])">
+    <i class="material-icons text-white">delete</i>
+  </button>
   }
 </div>
