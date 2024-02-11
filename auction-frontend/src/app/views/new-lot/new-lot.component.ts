@@ -49,12 +49,15 @@ export class NewLotComponent {
       )
     ).subscribe((lot) => {
       if (lot) {
-        console.log(lot.startingAt);
         this.form.patchValue({ 
           ...lot,
           startingAt: formatDate(new Date(lot.startingAt), 'yyyy-MM-ddThh:mm', 'en-EN'),
           closingAt: formatDate(new Date(lot.closingAt), 'yyyy-MM-ddThh:mm', 'en-EN'),
           tags: lot.tags.join(' ')
+        })
+
+        lot.images.forEach((i) => {
+          this.images.push(new FormControl(i, { nonNullable: true }));
         })
       }
     });
@@ -146,5 +149,10 @@ export class NewLotComponent {
         this.form.controls.images.push(new FormControl(staticFile.url, {nonNullable: true}));
       });
     });
+  }
+
+  onImageDelete(image: string) {
+    const index = this.images.controls.findIndex(c => c.value === image);
+    this.images.removeAt(index);
   }
 }

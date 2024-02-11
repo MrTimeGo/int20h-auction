@@ -19,7 +19,7 @@ public class LotService(AuctionContext context, ICurrentUserService currentUserS
 
         entity.AuthorId = currentUserService.CurrentUserId!.Value;
 
-        entity.Images = await context.StaticFiles.Where(sf => dto.Images.Contains(sf.Id)).ToListAsync();
+        entity.Images = await context.StaticFiles.Where(sf => dto.Images.Contains(sf.FilePath)).ToListAsync();
         
 
         var existingTags = await context.Tags.Where(x => dto.Tags.Any(y => x.Name.ToLower() == y.ToLower())).ToListAsync();
@@ -51,7 +51,7 @@ public class LotService(AuctionContext context, ICurrentUserService currentUserS
 
     public async Task<PaginationResult<LotDto>> GetLotsAsync(string? searchTerm, LotFilter filter, LotSort sort, PaginationModel pagination)
     {
-        var query = context.Lots.Include(l => l.Tags).AsQueryable();
+        var query = context.Lots.Include(l => l.Tags).Include(l => l.Images).AsQueryable();
 
         if (filter.MyLots is not null || filter.MyBets is not null || filter.LotStatus is not null)
         {
@@ -171,7 +171,7 @@ public class LotService(AuctionContext context, ICurrentUserService currentUserS
 
     public async Task<LotDto> UpdateLotAsync(Guid id, CreateLotDto dto)
     {
-        var existingEntity = await context.Lots.FirstOrDefaultAsync(l => l.Id == id);
+        var existingEntity = await context.Lots.Include(l => l.Images).Include(l => l.Tags).FirstOrDefaultAsync(l => l.Id == id);
 
         if (existingEntity is null)
         {
@@ -190,8 +190,9 @@ public class LotService(AuctionContext context, ICurrentUserService currentUserS
         existingEntity.StartingAt = dto.StartingAt;
         existingEntity.ClosingAt = dto.ClosingAt;
 
+        existingEntity.Images.Clear();
 
-        existingEntity.Images = await context.StaticFiles.Where(sf => dto.Images.Contains(sf.Id)).ToListAsync();
+        (await context.StaticFiles.Where(sf => dto.Images.Contains(sf.FilePath)).ToListAsync()).ForEach(existingEntity.Images.Add);
 
 
         var existingTags = await context.Tags.Where(x => dto.Tags.Any(y => x.Name.ToLower() == y.ToLower())).ToListAsync();
@@ -203,7 +204,8 @@ public class LotService(AuctionContext context, ICurrentUserService currentUserS
             existingTags.AddRange(newTags);
         }
 
-        existingEntity.Tags = existingTags;
+        existingEntity.Tags.Clear();
+        existingTags.ForEach(existingEntity.Tags.Add);
 
         var result = context.Lots.Update(existingEntity);
 

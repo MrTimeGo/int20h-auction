@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-image-carousel',
@@ -13,6 +13,10 @@ export class ImageCarouselComponent {
   @Input() images: string[] = []
 
   @Input() height = '';
+
+  @Input() editMode = false;
+
+  @Output() deleteClick = new EventEmitter<string>();
 
   next() {
     this.currentImageIndex = (this.currentImageIndex + 1) % this.images.length
