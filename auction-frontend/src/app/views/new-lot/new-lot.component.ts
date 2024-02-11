@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { LotService } from '../../shared/services';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FileService, LotService } from '../../shared/services';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateLot } from '../../shared/models';
 import {
   ButtonComponent,
@@ -27,10 +27,11 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class NewLotComponent {
   lotService = inject(LotService);
+  fileService = inject(FileService);
   fb = inject(FormBuilder);
   route = inject(ActivatedRoute);
   router = inject(Router);
-  toastr = inject(ToastrService)
+  toastr = inject(ToastrService);
 
   mode: 'new' | 'edit' = 'new';
   lotId: string | null = null;
@@ -133,5 +134,17 @@ export class NewLotComponent {
         }
       });
     }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onFileSelected(event: any) {
+    console.log(event);
+    const files: File[] = [...event.target.files];
+
+    this.fileService.uploadFile(files).subscribe((staticFiles) => {
+      staticFiles.forEach(staticFile => {
+        this.form.controls.images.push(new FormControl(staticFile.url, {nonNullable: true}));
+      });
+    });
   }
 }

@@ -30,8 +30,15 @@
         label="Додайте теги для лоту"
         [control]="tags"></app-form-field>
       <div
-        class="flex justify-center items-center text-buttons text-gray-80 border border-primary-80 rounded-lg h-16 hover:drop-shadow cursor-pointer">
+        class="flex justify-center items-center text-buttons text-gray-80 border border-primary-80 rounded-lg h-16 hover:drop-shadow cursor-pointer"
+        (mousedown)="fileUpload.click()">
         <span>Додати фото</span>
+        <input
+          type="file"
+          class="hidden"
+          (change)="onFileSelected($event)"
+          multiple
+          #fileUpload />
       </div>
     </div>
 
