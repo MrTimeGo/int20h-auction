@@ -14,7 +14,7 @@ export class LotService {
   private params: LotParams = {
     pagination: {
       page: 0,
-      pageSize: 20
+      pageSize: 12
     },
     filters: null,
     sort: null,
@@ -30,6 +30,10 @@ export class LotService {
     }
 
     return this.lots.pipe(map(r => r.entities));
+  }
+
+  getCount$(): Observable<number> {
+    return this.lots.pipe(map(r => r.count));
   }
 
   applyParams(params: LotParams): void {

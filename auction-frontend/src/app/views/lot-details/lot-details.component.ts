@@ -8,7 +8,7 @@ import { AuthService, BetHubService, ChatHubService, ChatService, LotService } f
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { CountdownComponent } from 'ngx-countdown';
-import { LotDetailed, LotStatus } from '../../shared/models';
+import { LotDetailed, LotStatus, User } from '../../shared/models';
 import { ToastrService } from 'ngx-toastr';
 import { FormControl, Validators } from '@angular/forms';
 import { InputComponent } from "../../shared/components/controls/input/input.component";
@@ -32,6 +32,7 @@ export class LotDetailsComponent {
   chatHub = inject(ChatHubService);
 
   lotStatus = LotStatus;
+  currentUser: User | null = null;
 
   constructor() {
     this.route.paramMap.pipe(
@@ -76,8 +77,12 @@ export class LotDetailsComponent {
       this.chatHub.getIncomingMessagesForLot(lot!.id).subscribe(message => {
         this.messages = [...this.messages, message].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       })
-    });
 
+    });
+    
+    this.authService.getCurrentUser$().subscribe((user) => {
+      this.currentUser = user;
+    })
   }
 
   lot: LotDetailed | null = null; 
@@ -117,9 +122,7 @@ export class LotDetailsComponent {
 
 
   get meInMembers() {
-    return this.authService.getCurrentUser$().pipe(
-      map(user => user ? this.members.includes(user.username) : false),
-    );
+    return this.currentUser ? this.members.includes(this.currentUser.username) : false
   }
 
   messageControl = new FormControl('', Validators.required);
