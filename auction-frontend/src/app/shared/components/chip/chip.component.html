@@ -1,5 +1,7 @@
 <span
-  class="px-4 py-1 text-secondary rounded"
-  [class]="['bg-'+ backgroundColor, 'text-' + textColor]">
+  (mousedown)="onClick(label)"
+  class="px-4 py-1 text-secondary rounded select-none"
+  [class]="['bg-'+ backgroundColor, 'text-' + textColor]"
+  [class.cursor-pointer]="isClickable">
   {{ label }}
 </span>

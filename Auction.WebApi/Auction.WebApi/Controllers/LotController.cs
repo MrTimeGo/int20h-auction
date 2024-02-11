@@ -1,6 +1,7 @@
 ﻿using Auction.WebApi.Dto;
 using Auction.WebApi.Dto.Bet;
 using Auction.WebApi.Dto.Lot;
+using Auction.WebApi.Dto.Tag;
 using Auction.WebApi.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +9,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace Auction.WebApi.Controllers;
 [Route("api/lots")]
 [ApiController]
+[Authorize]
 public class LotController(ILotService lotService) : ControllerBase
 {
     [HttpGet]
-    [Authorize]
     public async Task<ActionResult<PaginationResult<LotDto>>> GetLotList(
             [FromQuery] string? searchTerm,
             [FromQuery] LotFilter filters,
@@ -23,7 +24,6 @@ public class LotController(ILotService lotService) : ControllerBase
     }
 
     [HttpPost]
-    [Authorize]
     public async Task<ActionResult<LotDto>> PostLot([FromBody] CreateLotDto dto)
     {
         return Ok(await lotService.CreateLotAsync(dto));

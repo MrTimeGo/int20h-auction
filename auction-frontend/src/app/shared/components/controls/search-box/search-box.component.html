@@ -1,0 +1,26 @@
+<div
+  (mousedown)="isFocused=true"
+  (mouseleave)="isFocused=false"
+  class="flex flex-col gap-0.5 rounded-lg px-4 py-3 drop-shadow-md bg-white border border-gray-20 hover:border-[1.5px] hover:border-primary-90 focus:border-primary-100">
+  <span class="flex gap-0.5">
+    <input
+      [formControl]="control"
+      class="focus-within:outline-none w-full placeholder-gray-70 placeholder-body text-body text-gray-80"
+      placeholder="Пошук" />
+    <i class="material-icons">search</i>
+  </span>
+  @if(tags$ | async; as tags) { @if ((isFocused || control.value) && tags.length) {
+  <span class="flex flex-col gap-2">
+    <hr class="border border-primary-80" />
+    <span class="flex gap-2">
+      @for (tag of tags; track $index) {
+      <app-chip
+        (clicked)="onTagClicked($event)"
+        [backgroundColor]="'primary-80'"
+        [isClickable]="true"
+        [label]="'{{tag.name}}'"></app-chip>
+      }
+    </span>
+  </span>
+  } }
+</div>

@@ -1,6 +1,7 @@
 ﻿using Auction.WebApi.Dto;
 using Auction.WebApi.Dto.Bet;
 using Auction.WebApi.Dto.Lot;
+using Auction.WebApi.Dto.Tag;
 
 namespace Auction.WebApi.Services.Interfaces;
 

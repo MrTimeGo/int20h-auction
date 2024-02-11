@@ -1,6 +1,7 @@
 ﻿using Auction.WebApi.Data;
 using Auction.WebApi.Dto;
 using Auction.WebApi.Dto.Lot;
+using Auction.WebApi.Dto.Tag;
 using Auction.WebApi.Entities;
 using Auction.WebApi.Services.Interfaces;
 using Auction.WebApi.Expections;
@@ -92,13 +93,14 @@ public class LotService(AuctionContext context, ICurrentUserService currentUserS
         query = query
                 .Include(l => l.Bets)
                 .Where(l => (filter.MyLots!.Value && l.AuthorId == currentUserService.CurrentUserId) ||
-                    (filter.MyBets!.Value && l.Bets.Any(b => b.AuthorId == currentUserService.CurrentUserId))
-        );
-        if (filter.LotStatus is not null)
+                    (filter.MyBets!.Value && l.Bets.Any(b => b.AuthorId == currentUserService.CurrentUserId)) || 
+                    (!filter.MyBets.Value && !filter.MyLots.Value)
+                );
+        if (filter.LotStatus is not null && filter.LotStatus != LotStatus.None)
         {
-            query = query.Where(l => (filter.LotStatus == LotStatus.Active && l.StartingAt < DateTime.UtcNow && DateTime.UtcNow < l.ClosingAt) ||
-                    (filter.LotStatus == LotStatus.NotStarted && DateTime.UtcNow < l.StartingAt) ||
-                    (filter.LotStatus == LotStatus.Closed && l.ClosingAt < DateTime.UtcNow)
+            query = query.Where(l => (((filter.LotStatus & LotStatus.Active) == LotStatus.Active) && l.StartingAt < DateTime.UtcNow && DateTime.UtcNow < l.ClosingAt) ||
+                    (((filter.LotStatus & LotStatus.NotStarted) == LotStatus.NotStarted) && DateTime.UtcNow < l.StartingAt) ||
+                    (((filter.LotStatus & LotStatus.Closed) == LotStatus.Closed) && l.ClosingAt < DateTime.UtcNow)
                 );
         }
 
@@ -118,14 +120,15 @@ public class LotService(AuctionContext context, ICurrentUserService currentUserS
 
     private IQueryable<Lot> ApplySort(IQueryable<Lot> query, LotSort sort)
     {
-        if (sort.SortOrder == LotSortOrder.Ascending)
+        if (sort.SortOrder is not null)
         {
-            return query.OrderBy(l => sort.Type == LotSortType.StartingAt ? l.StartingAt : l.ClosingAt);
+            return sort.SortOrder == LotSortOrder.Ascending ? query.OrderBy(l => l.StartingAt) : query.OrderByDescending(l => l.StartingAt);
         }
-        else
+        else if(sort.BetStepOrder is not null)
         {
-            return query.OrderByDescending(l => sort.Type == LotSortType.StartingAt ? l.StartingAt : l.ClosingAt);
+            return sort.BetStepOrder == BetStepOrder.Ascending ? query.OrderBy(l => l.MinimalStep) : query.OrderByDescending(l => l.MinimalStep);
         }
+        return query;
     }
 
     public async Task<LotDetailedDto> GetLotByIdAsync(Guid id)

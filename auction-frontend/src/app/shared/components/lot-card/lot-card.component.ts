@@ -36,6 +36,6 @@ export class LotCardComponent {
   }
 
   get status() {
-    return this.statusesOptions[this.lot!.status];
+    return this.statusesOptions[this.lot!.status as 1 | 2 | 4];
   }
 }

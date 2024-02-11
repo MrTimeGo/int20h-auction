@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-chip',
@@ -11,4 +11,12 @@ export class ChipComponent {
   @Input() backgroundColor: string = 'gray-10';
   @Input() textColor: string = 'gray-70';
   @Input() label: string = '';
+  @Input() isClickable = false;
+  @Output() clicked = new EventEmitter<string>();
+
+  onClick(label: string) {
+    if(this.isClickable){
+      this.clicked.emit(label);
+    }
+  }
 }
