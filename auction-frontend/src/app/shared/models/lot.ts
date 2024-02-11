@@ -1,5 +1,6 @@
 import { Pagination } from ".";
 import { Bet } from "./bet";
+import { Message } from "./message";
 
 export enum LotStatus {
   NotStarted,

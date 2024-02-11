@@ -15,6 +15,7 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Auction.WebApi.Middlewares;
 using Auction.WebApi.Extentions;
+using Auction.WebApi.Hubs;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,6 +55,7 @@ builder.Services.AddScoped<ILotService, LotService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IUploadFileService, UploadFileService>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IChatService, ChatService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
     options.TokenValidationParameters = new TokenValidationParameters
@@ -64,6 +66,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
     };
 });
+
+builder.Services.AddSignalR();
 
 //if (builder.Environment.IsDevelopment())
 //    builder.Services.AddDevAws(builder.Configuration);
@@ -109,12 +113,18 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors(x => x.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
+var allowedOrigins = (builder.Configuration.GetValue<string>("AllowedOrigins") ?? "").Split(';');
+
+app.UseCors(x => x.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod().AllowCredentials());
+
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseMiddleware<CurrentUserMiddleware>();
+
+app.MapHub<ChatHub>("/api/chatHub");
+app.MapHub<BetHub>("/api/betHub");
 
 app.MapControllers();
 

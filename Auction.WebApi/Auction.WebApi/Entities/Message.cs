@@ -6,4 +6,7 @@ public class Message : BaseEntity
 
     public Guid LotId { get; set; }
     public Lot Lot { get; set; } = null!;
+
+    public Guid AuthorId { get; set; }
+    public User Author { get; set; } = null!;
 }

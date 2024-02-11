@@ -24,3 +24,18 @@ i.material-icons {
   width: 24px;
   height: 24px;
 }
+
+/* width */
+::-webkit-scrollbar {
+  width: 2px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  display: none;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #1E2023;
+}

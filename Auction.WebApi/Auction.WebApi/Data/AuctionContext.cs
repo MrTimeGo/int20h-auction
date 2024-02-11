@@ -54,6 +54,12 @@ public class AuctionContext(DbContextOptions<AuctionContext> options) : Identity
             .WithMany()
             .HasForeignKey(m => m.LotId);
 
+        builder
+            .Entity<Message>()
+            .HasOne(m => m.Author)
+            .WithMany()
+            .HasForeignKey(m => m.AuthorId);
+
         AutoGenerateCreatedAtValue<Bet>(builder);
         AutoGenerateCreatedAtValue<Lot>(builder);
         AutoGenerateCreatedAtValue<Tag>(builder);
