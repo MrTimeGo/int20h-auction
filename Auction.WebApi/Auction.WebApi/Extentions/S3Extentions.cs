@@ -12,11 +12,13 @@ namespace Auction.WebApi.Extentions
             var awsOptions = GetAwsOptions(configuration);
 
             var s3Client = new AmazonS3Client(
-                new BasicAWSCredentials(awsOptions.AccessKey, awsOptions.SecretKey), new AmazonS3Config()
+                new BasicAWSCredentials(awsOptions.AccessKey, awsOptions.SecretKey), 
+                new AmazonS3Config()
                 {
                     ServiceURL = awsOptions.ServiceUrl,
-                    ForcePathStyle = true,
-                });
+                    //ForcePathStyle = true,
+                }
+            );
 
             services.AddSingleton<IAmazonS3>(s3Client);
             return services;

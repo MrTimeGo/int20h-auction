@@ -65,10 +65,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
-if (builder.Environment.IsDevelopment())
-    builder.Services.AddDevAws(builder.Configuration);
-else
-    builder.Services.AddProdAws(builder.Configuration);
+//if (builder.Environment.IsDevelopment())
+//    builder.Services.AddDevAws(builder.Configuration);
+//else
+//    builder.Services.AddProdAws(builder.Configuration);
+
+builder.Services.AddDevAws(builder.Configuration);
 
 builder.Services.AddControllers(options =>
 {
