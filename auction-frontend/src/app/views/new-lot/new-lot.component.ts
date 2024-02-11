@@ -141,7 +141,6 @@ export class NewLotComponent {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onFileSelected(event: any) {
-    console.log(event);
     const files: File[] = [...event.target.files];
 
     this.fileService.uploadFile(files).subscribe((staticFiles) => {
