@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 import { FilterBoxComponent, LotCardComponent, SearchBoxComponent, SortBoxComponent } from '../../shared/components';
 import { FormBuilder } from '@angular/forms';
 import { LotParams, LotSortType } from '../../shared/models';
-import { debounceTime } from 'rxjs';
+import { debounceTime, map } from 'rxjs';
 
 @Component({
   selector: 'app-lot',
@@ -45,11 +45,15 @@ export class LotComponent {
     searchTerm: [''],
     pagination: this.formBuilder.group({
       page: [0],
-      pageSize: [20]
+      pageSize: [12]
     })
   });
 
   lots$ = this.lotService.getLots$();
+  pages$ = this.lotService.getCount$().pipe(
+    map(c => Math.ceil(c / this.pagination.value.pageSize!)),
+    map(pageCount => Array.from({ length: pageCount }).map((value, index) => index))
+  );
 
   get filters() {
     return this.form.controls.filters;
@@ -61,5 +65,13 @@ export class LotComponent {
 
   get sort() {
     return this.form.controls.sort;
+  }
+
+  get pagination() {
+    return this.form.controls.pagination;
+  }
+
+  pageClicked(page: number) {
+    this.pagination.patchValue({ page: page });
   }
 }

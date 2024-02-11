@@ -14,7 +14,8 @@
       <app-filter-box [group]="filters"></app-filter-box>
       <app-sort-box [group]="sort"></app-sort-box>
     </div>
-    <div class="grid grid-cols-[518px_518px] gap-x-8 gap-y-12 items-top">
+    <div
+      class="grid grid-cols-2 2xl:grid-cols-3 min-[2200px]:grid-cols-4 gap-x-8 gap-y-12 items-top">
       @for (lot of lots; track $index) {
       <app-lot-card [lot]="lot"></app-lot-card>
       } @empty {
@@ -24,5 +25,28 @@
       }
     </div>
   </div>
-  }
+  @if (pages$ | async; as pages) { @if (pages.length > 1) {
+  <div class="flex mt-auto justify-center gap-9 items-baseline">
+    @if (pagination.value.page !== 0) {
+    <button
+      class="text-gray-80"
+      (click)="pageClicked(pagination.value.page! - 1)">
+      <i class="material-icons">arrow_back_ios_new</i>
+    </button>
+    } @for(page of pages; track $index) {
+    <button
+      class="text-h4"
+      [class]="pagination.value.page === page ? 'text-gray-80' : 'text-gray-30'"
+      (click)="pageClicked(page)">
+      {{ page + 1 }}
+    </button>
+    } @if (pagination.value.page !== pages.length - 1) {
+    <button
+      class="text-gray-80"
+      (click)="pageClicked(pagination.value.page! + 1)">
+      <i class="material-icons">arrow_forward_ios_new</i>
+    </button>
+    }
+  </div>
+  } } }
 </div>
