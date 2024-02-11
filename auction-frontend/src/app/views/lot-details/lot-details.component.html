@@ -1,4 +1,4 @@
-@if (lot$ | async; as lot) {
+@if (lot) {
 <div class="grid grid-cols-2 gap-x-8 gap-y-6">
   <div class="flex flex-col gap-6">
     <button
@@ -94,7 +94,7 @@
         @for (bet of lot.bets; track $index) {
         <div class="flex justify-between border-b border-b-primary-80">
           <span class="text-h5 text-primary-100">{{ bet.author }}:</span>
-          <span class="text-h5 text-gray-80">{{ bet.amount}} грн</span>
+          <span class="text-h5 text-gray-80">{{ bet.amount }} грн</span>
           <span class="text-h5 text-gray-40">
             {{ bet.createdAt | date: 'dd.MM - HH:mm' }}
           </span>

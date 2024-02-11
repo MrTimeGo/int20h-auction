@@ -15,6 +15,7 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Auction.WebApi.Middlewares;
 using Auction.WebApi.Extentions;
+using Auction.WebApi.Hubs;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -65,6 +66,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
+builder.Services.AddSignalR();
+
 //if (builder.Environment.IsDevelopment())
 //    builder.Services.AddDevAws(builder.Configuration);
 //else
@@ -109,12 +112,18 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors(x => x.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
+var allowedOrigins = (builder.Configuration.GetValue<string>("AllowedOrigins") ?? "").Split(';');
+
+app.UseCors(x => x.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod().AllowCredentials());
+
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseMiddleware<CurrentUserMiddleware>();
+
+app.MapHub<ChatHub>("/api/chatHub");
+app.MapHub<BetHub>("/api/betHub");
 
 app.MapControllers();
 

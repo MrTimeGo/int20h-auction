@@ -8,10 +8,13 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Auction.WebApi.Dto.Bet;
+using Microsoft.AspNetCore.SignalR;
+using Auction.WebApi.Hubs;
+using Auction.WebApi.Hubs.Clients;
 
 namespace Auction.WebApi.Services.Implementations;
 
-public class LotService(AuctionContext context, ICurrentUserService currentUserService, IMapper mapper) : ILotService
+public class LotService(AuctionContext context, ICurrentUserService currentUserService, IMapper mapper, IHubContext<BetHub, IBetHubClient> betHubContext) : ILotService
 {
     public async Task<LotDto> CreateLotAsync(CreateLotDto dto)
     {
@@ -167,6 +170,13 @@ public class LotService(AuctionContext context, ICurrentUserService currentUserS
 
         context.Bets.Add(bet);
         await context.SaveChangesAsync();
+
+        await betHubContext.Clients.All.SendBetMadeNotification(lot.Id, new BetDto
+        {
+            Amount = dto.Amount,
+            Author = (await context.Users.Where(u => u.Id == currentUserService.CurrentUserId.Value).Select(u => u.UserName).FirstAsync())!,
+            CreatedAt = DateTime.UtcNow,
+        });
     }
 
     public async Task<LotDto> UpdateLotAsync(Guid id, CreateLotDto dto)
