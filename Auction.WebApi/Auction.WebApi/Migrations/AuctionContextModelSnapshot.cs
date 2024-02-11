@@ -98,6 +98,9 @@ namespace Auction.WebApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -111,6 +114,8 @@ namespace Auction.WebApi.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
 
                     b.HasIndex("LotId");
 
@@ -338,7 +343,7 @@ namespace Auction.WebApi.Migrations
                         .IsRequired();
 
                     b.HasOne("Auction.WebApi.Entities.Lot", "Lot")
-                        .WithMany()
+                        .WithMany("Bets")
                         .HasForeignKey("LotId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -361,11 +366,19 @@ namespace Auction.WebApi.Migrations
 
             modelBuilder.Entity("Auction.WebApi.Entities.Message", b =>
                 {
+                    b.HasOne("Auction.WebApi.Entities.User", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Auction.WebApi.Entities.Lot", "Lot")
                         .WithMany()
                         .HasForeignKey("LotId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Author");
 
                     b.Navigation("Lot");
                 });
@@ -425,6 +438,11 @@ namespace Auction.WebApi.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Auction.WebApi.Entities.Lot", b =>
+                {
+                    b.Navigation("Bets");
                 });
 #pragma warning restore 612, 618
         }

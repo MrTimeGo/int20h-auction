@@ -1,16 +1,85 @@
-<div class="flex flex-col" [formGroup]="form">
-  <label for="name">Name</label>
-  <input id="name" type="text" formControlName="name" />
-  <label for="desctiption">Description</label>
-  <input id="desctiption" type="text" formControlName="description" />
-  <label for="starting-at">Starting At</label>
-  <input id="starting-at" type="date" formControlName="startingAt" />
-  <label for="closing-at">Closing At</label>
-  <input id="closing-at" type="date" formControlName="closingAt" />
-  <label for="initial-price">Initial price</label>
-  <input id="initial-price" type="number" formControlName="initialPrice" />
-  <label for="minimal-step">Minimal step</label>
-  <input id="minimal-step" type="number" formControlName="minimalStep" />
+<div class="grid grid-cols-2 gap-y-12 w-full gap-x-8">
+  <div class="flex flex-col gap-6">
+    <button
+      class="text-secondary-buttons text-gray-80 w-fit flex items-center disabled:invisible"
+      [routerLink]="'/lots'">
+      <i class="material-icons">arrow_back_ios_new</i> Повернутися назад
+    </button>
+    <div class="flex flex-col gap-2">
+      <h3 class="text-h3 text-gray-80">
+        {{ mode === 'new' ? 'Створення свого' : 'Редагування'}} лоту
+      </h3>
+      <p class="text-secondary text-gray-40">
+        Створіть свій лот, додайте назву, опис лоту, час початку та кінця
+      </p>
+    </div>
+  </div>
 
-  <button (click)="submit()">Submit</button>
+  <div></div>
+
+  <div class="flex flex-col gap-12">
+    <div class="flex flex-col gap-5">
+      <div class="flex border-b border-b-primary-80 mb-5">
+        <h4 class="text-h4 text-gray-80">Загальні данні</h4>
+      </div>
+      <app-form-field label="Назва лоту" [control]="name"></app-form-field>
+      <app-form-field
+        label="Опис лоту"
+        [control]="description"></app-form-field>
+      <app-form-field
+        label="Додайте теги для лоту"
+        [control]="tags"></app-form-field>
+      <div
+        class="flex justify-center items-center text-buttons text-gray-80 border border-primary-80 rounded-lg h-16 hover:drop-shadow cursor-pointer"
+        (mousedown)="fileUpload.click()">
+        <span>Додати фото</span>
+        <input
+          type="file"
+          class="hidden"
+          (change)="onFileSelected($event)"
+          multiple
+          #fileUpload />
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-5">
+      <div class="flex border-b border-b-primary-80 mb-5">
+        <h4 class="text-h4 text-gray-80">Проведення аукціону</h4>
+      </div>
+      <app-form-field
+        label="Стартова ціна"
+        type="number"
+        [control]="initialPrice"></app-form-field>
+      <app-form-field
+        label="Мінімальний крок"
+        type="number"
+        [control]="minimalStep"></app-form-field>
+    </div>
+
+    <div class="flex flex-col gap-5">
+      <div class="flex border-b border-b-primary-80 mb-5">
+        <h4 class="text-h4 text-gray-80">Дата та час аукціону</h4>
+      </div>
+      <div class="grid grid-cols-2 gap-x-8 gap-y-10">
+        <app-form-field
+          label="Початок аукціону"
+          type="datetime-local"
+          [control]="startingAt"></app-form-field>
+        <app-form-field
+          label="Кінець аукціону"
+          type="datetime-local"
+          [control]="closingAt"></app-form-field>
+      </div>
+    </div>
+  </div>
+  <app-image-carousel
+    height="518"
+    [images]="images.value"
+    [editMode]="true"
+    (deleteClick)="onImageDelete($event)"></app-image-carousel>
+</div>
+<div class="flex justify-around">
+  <app-button class="w-[518px]" [disabled]="form.invalid" (clicked)="submit()">
+    {{ mode === 'new' ? 'Створити лот' : 'Зберегти зміни' }}
+  </app-button>
 </div>

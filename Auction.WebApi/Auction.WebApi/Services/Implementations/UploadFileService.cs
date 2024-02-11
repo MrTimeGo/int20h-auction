@@ -15,7 +15,7 @@ namespace Auction.WebApi.Services.Implementations
                 .Get<S3Options>();
         public async Task<string[]> UploadListFilesAsync(List<IFormFile> files)
         {
-            if(!await CheckIfBucketExistAsync())
+            if (!await CheckIfBucketExistAsync())
             {
                 await CreateBucketAsync();
             }
@@ -36,12 +36,13 @@ namespace Auction.WebApi.Services.Implementations
                 BucketName = options.BucketName,
                 InputStream = stream,
                 Key = objectKey,
-                ContentType = file.ContentType
+                ContentType = file.ContentType,
+                CannedACL = S3CannedACL.PublicRead
             });
 
             stream.Close();
 
-            return Path.Join(options.BucketUrl, objectKey);
+            return options.BucketUrl + '/' + objectKey;
         }
 
         private async Task<bool> CheckIfBucketExistAsync()

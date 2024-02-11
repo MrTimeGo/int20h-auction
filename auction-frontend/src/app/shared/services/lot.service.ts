@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, map } from 'rxjs';
-import { CreateLot, Lot, LotParams, PaginationResult } from '../models';
+import { BehaviorSubject, Observable, map, tap } from 'rxjs';
+import { CreateLot, Lot, LotDetailed, LotParams, PaginationResult } from '../models';
 import { HttpClient } from '@angular/common/http';
 import { environment } from './../../../environments/environment';
 
@@ -74,10 +74,22 @@ export class LotService {
   }
 
   createLot(lot: CreateLot) {
-    this.http.post<Lot>(`${this.baseUrl}`, { 
+    return this.http.post<Lot>(`${this.baseUrl}`, { 
       ...lot,
-    }).subscribe();
-    
-    this.applyParams(this.params);
+    }).pipe(tap(() => this.applyParams(this.params)));
+  }
+
+  updateLot(id: string, lot: CreateLot) {
+    return this.http.put<Lot>(`${this.baseUrl}/${id}`, { 
+      ...lot,
+    }).pipe(tap(() => this.applyParams(this.params)));
+  }
+
+  getLotDetailed(id: string) {
+    return this.http.get<LotDetailed>(`${this.baseUrl}/${id}`);
+  }
+
+  makeBet(lotId: string, amount: number) {
+    return this.http.post(`${this.baseUrl}/${lotId}/make-bet`, { amount });
   }
 }

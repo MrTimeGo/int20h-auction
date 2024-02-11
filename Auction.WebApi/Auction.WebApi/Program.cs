@@ -15,6 +15,7 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Auction.WebApi.Middlewares;
 using Auction.WebApi.Extentions;
+using Auction.WebApi.Hubs;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,7 +35,7 @@ builder.Services.AddIdentityCore<User>(options =>
     options.Password.RequiredUniqueChars = 1;
 
     // User settings.
-    options.User.AllowedUserNameCharacters = options.User.AllowedUserNameCharacters + ' ';
+    options.User.AllowedUserNameCharacters = string.Empty;
 
     options.User.RequireUniqueEmail = true;
 })
@@ -55,6 +56,7 @@ builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IUploadFileService, UploadFileService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<ITagService, TagService>();
+builder.Services.AddScoped<IChatService, ChatService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
     options.TokenValidationParameters = new TokenValidationParameters
@@ -66,10 +68,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
-if (builder.Environment.IsDevelopment())
-    builder.Services.AddDevAws(builder.Configuration);
-else
-    builder.Services.AddProdAws(builder.Configuration);
+builder.Services.AddSignalR();
+
+//if (builder.Environment.IsDevelopment())
+//    builder.Services.AddDevAws(builder.Configuration);
+//else
+//    builder.Services.AddProdAws(builder.Configuration);
+
+builder.Services.AddDevAws(builder.Configuration);
 
 builder.Services.AddControllers(options =>
 {
@@ -108,12 +114,18 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors(x => x.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
+var allowedOrigins = (builder.Configuration.GetValue<string>("AllowedOrigins") ?? "").Split(';');
+
+app.UseCors(x => x.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod().AllowCredentials());
+
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseMiddleware<CurrentUserMiddleware>();
+
+app.MapHub<ChatHub>("/api/chatHub");
+app.MapHub<BetHub>("/api/betHub");
 
 app.MapControllers();
 

@@ -3,15 +3,16 @@ import { ImageCarouselComponent } from '../image-carousel/image-carousel.compone
 import { Lot, LotStatus } from '../../models';
 import { ChipComponent } from '../chip/chip.component';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-lot-card',
   standalone: true,
-  imports: [CommonModule, ImageCarouselComponent, ChipComponent],
+  imports: [CommonModule, ImageCarouselComponent, ChipComponent, RouterModule],
   templateUrl: './lot-card.component.html',
   styleUrl: './lot-card.component.scss'
 })
-export class LotCardComponent {
+export class LotCardComponent {  
   @Input() lot?: Lot;
   
   lotStatusEnum = LotStatus;

@@ -8,6 +8,6 @@ public class CreateLotDto
     public DateTime ClosingAt { get; set; }
     public decimal InitialPrice { get; set; }
     public decimal MinimalStep { get; set; }
-    public List<Guid> Images { get; set; } = [];
+    public List<string> Images { get; set; } = [];
     public List<string> Tags { get; set; } = [];
 }

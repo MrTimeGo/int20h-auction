@@ -1,4 +1,6 @@
 import { Pagination } from ".";
+import { Bet } from "./bet";
+import { Message } from "./message";
 
 export enum LotStatus {
   None = 0,
@@ -10,6 +12,7 @@ export enum LotStatus {
 export interface Lot {
   id: string;
   name: string;
+  author: string;
   description: string;
   startingAt: Date;
   closingAt: Date;
@@ -18,6 +21,10 @@ export interface Lot {
   status: LotStatus;
   images: string[];
   tags: string[];
+}
+
+export interface LotDetailed extends Lot {
+  bets: Bet[];
 }
 
 export interface LotFilter {
@@ -53,4 +60,4 @@ export interface LotParams {
   pagination: Pagination | null
 }
 
-export type CreateLot = Omit<Lot, 'id' | 'status'>
+export type CreateLot = Omit<Lot, 'id' | 'status' | 'author'>
