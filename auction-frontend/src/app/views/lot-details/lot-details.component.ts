@@ -4,20 +4,22 @@ import { ChipComponent } from '../../shared/components';
 import { CommonModule } from '@angular/common';
 import { ButtonComponent } from "../../shared/components/controls/button/button.component";
 import { FormFieldComponent } from "../../shared/components/controls/form-field/form-field.component";
-import { BetHubService, LotService } from '../../shared/services';
+import { AuthService, BetHubService, ChatHubService, ChatService, LotService } from '../../shared/services';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { CountdownComponent } from 'ngx-countdown';
 import { LotDetailed, LotStatus } from '../../shared/models';
 import { ToastrService } from 'ngx-toastr';
 import { FormControl, Validators } from '@angular/forms';
+import { InputComponent } from "../../shared/components/controls/input/input.component";
+import { Message } from '../../shared/models/message';
 
 @Component({
-  selector: 'app-lot-details',
-  standalone: true,
-  templateUrl: './lot-details.component.html',
-  styleUrl: './lot-details.component.scss',
-  imports: [ImageCarouselComponent, ChipComponent, CommonModule, ButtonComponent, FormFieldComponent, CountdownComponent, RouterModule]
+    selector: 'app-lot-details',
+    standalone: true,
+    templateUrl: './lot-details.component.html',
+    styleUrl: './lot-details.component.scss',
+    imports: [ImageCarouselComponent, ChipComponent, CommonModule, ButtonComponent, FormFieldComponent, CountdownComponent, RouterModule, InputComponent]
 })
 export class LotDetailsComponent {
   lotService = inject(LotService);
@@ -25,6 +27,9 @@ export class LotDetailsComponent {
   route = inject(ActivatedRoute);
   toastr = inject(ToastrService);
   betHub = inject(BetHubService);
+  authService = inject(AuthService);
+  chatService = inject(ChatService);
+  chatHub = inject(ChatHubService);
 
   lotStatus = LotStatus;
 
@@ -45,7 +50,6 @@ export class LotDetailsComponent {
   
         const members = [...new Set( lot.bets.map(b => b.author))];
   
-  
         // TODO: review
         members.reduce((colors, member, i) => {
           colors[member] = this.colorPalette[(i + this.colorPalette.length) % this.colorPalette.length];
@@ -59,7 +63,18 @@ export class LotDetailsComponent {
     ).subscribe(lot => {
       this.lot = lot;
       this.betHub.getIncomingBetForLotId(lot!.id).subscribe((bet) => {
-        this.lot!.bets = [...this.lot!.bets, bet].sort((a, b) => b.amount - a.amount)
+        this.lot!.bets = [...this.lot!.bets, bet].sort((a, b) => b.amount - a.amount);
+        if (!this.memberColors[bet.author]) {
+          this.memberColors[bet.author] = this.colorPalette[(this.members.length + this.colorPalette.length) % this.colorPalette.length];
+        }
+      })
+
+      this.chatService.getMessagesForLot(lot!.id).subscribe(messages => {
+        this.messages = messages.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      })
+
+      this.chatHub.getIncomingMessagesForLot(lot!.id).subscribe(message => {
+        this.messages = [...this.messages, message].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       })
     });
 
@@ -98,5 +113,20 @@ export class LotDetailsComponent {
         console.error(err);
       }
     });
+  }
+
+
+  get meInMembers() {
+    return this.authService.getCurrentUser$().pipe(
+      map(user => user ? this.members.includes(user.username) : false),
+    );
+  }
+
+  messageControl = new FormControl('', Validators.required);
+
+  messages: Message[] = [];
+
+  sendMessage(lotId: string) {
+    this.chatService.sendMessage(lotId, this.messageControl.value!);
   }
 }

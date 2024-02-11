@@ -17,12 +17,11 @@
         }
       </div>
     </div>
-
     <div class="grid grid-rows-4 grid-flow-col gap-y-12">
       <span class="text-h5 text-gray-40">Стартова ціна</span>
       <span class="text-h5 text-gray-40">Мінімальний крок</span>
-      <span class="text-h5 text-gray-40"
-        >{{ lot.status === lotStatus.NotStarted ? 'Дата початку' : 'Дата закінчення'}}
+      <span class="text-h5 text-gray-40">
+        {{ lot.status === lotStatus.NotStarted ? 'Дата початку' : 'Дата закінчення'}}
       </span>
       <span class="text-h5 text-gray-40">Автор</span>
       <span>-</span>
@@ -38,22 +37,71 @@
       <span class="text-h5 text-gray-70">{{ lot.author }}</span>
     </div>
   </div>
+
   <div>
     <app-image-carousel height="518" [images]="lot.images"></app-image-carousel>
   </div>
-  <div class="flex flex-col gap-2">
-    <h4 class="text-h4 text-gray-80">Учасники</h4>
-    <div
-      class="flex gap-4 flex-wrap rounded-2xl p-6 border border-gray-20 justify-center">
-      @for (bet of members; track index; let index = $index) {
-      <span class="text-h5 text-{{memberColors[bet]}}"> {{ bet }} </span>
-      @if (index !== members.length - 1) {
-      <span class="text-h5 text-gray-80">-</span>
-      } } @empty {
-      <span class="text-body text-gray-80">Ще немає учасників</span>
-      }
+
+  <div class="flex flex-col gap-6">
+    <div class="flex flex-col gap-2">
+      <h4 class="text-h4 text-gray-80">Учасники</h4>
+      <div
+        class="flex gap-4 flex-wrap rounded-2xl p-6 border border-gray-20 justify-center">
+        @for (bet of members; track index; let index = $index) {
+        <span class="text-h5 text-{{memberColors[bet]}}"> {{ bet }} </span>
+        @if (index !== members.length - 1) {
+        <span class="text-h5 text-gray-80">-</span>
+        } } @empty {
+        <span class="text-body text-gray-80">Ще немає учасників</span>
+        }
+      </div>
+    </div>
+    <div class="flex flex-col gap-2 h-full">
+      <h4 class="text-h4 text-gray-80">Чат</h4>
+      <div
+        class="flex flex-col gap-4 justify-between rounded-2xl p-6 border border-gray-20 h-full">
+        <div class="max-h-[500px] w-full overflow-auto pr-2">
+          <div class="flex flex-col gap-4">
+            @for (message of messages; track $index) {
+            <span class="text-body text-gray-80">
+              <span class="text-h5 text-{{memberColors[message.author]}}">
+                {{message.author}}:
+              </span>
+              {{message.text}}
+            </span>
+            } @empty {
+            <span class="text-body text-gray-70 text-center my-auto">
+              Ще немає повідомлень
+            </span>
+            }
+          </div>
+        </div>
+        <div class="flex gap-2 w-full">
+          @if (lot.status !== lotStatus.Active) {
+          <span class="text-body text-gray-60 mx-auto">
+            Аукціон не активний
+          </span>
+          } @else if (meInMembers | async) {
+          <app-input
+            class="w-full"
+            placeholder="Повідомлення"
+            [control]="messageControl"></app-input>
+          <app-button
+            class="[&>button]:w-14 [&>button]:h-14 [&>button]:p-4"
+            (clicked)="sendMessage(lot.id)"
+            [disabled]="messageControl.invalid">
+            <i class="material-icons">arrow_outward</i>
+          </app-button>
+          } @else {
+          <span class="text-body text-gray-60 mx-auto">
+            Зробіть ставку, щоб приймати участь в обговоренні
+          </span>
+          }
+        </div>
+      </div>
     </div>
   </div>
+
   <div class="flex flex-col gap-6">
     <div class="flex flex-col gap-2 text-center">
       <div
@@ -89,19 +137,21 @@
     </div>
     <div class="flex flex-col gap-2">
       <h4 class="text-h4 text-gray-80">Історія ставок</h4>
-      <div
-        class="flex flex-col gap-4 p-6 rounded-2xl border border-gray-20 text-center">
-        @for (bet of lot.bets; track $index) {
-        <div class="flex justify-between border-b border-b-primary-80">
-          <span class="text-h5 text-primary-100">{{ bet.author }}:</span>
-          <span class="text-h5 text-gray-80">{{ bet.amount }} грн</span>
-          <span class="text-h5 text-gray-40">
-            {{ bet.createdAt | date: 'dd.MM - HH:mm' }}
-          </span>
+      <div class="p-6 rounded-2xl border border-gray-20">
+        <div
+          class="flex flex-col gap-4 text-center max-h-[400px] overflow-auto pr-2">
+          @for (bet of lot.bets; track $index) {
+          <div class="flex justify-between border-b border-b-primary-80">
+            <span class="text-h5 text-primary-100">{{ bet.author }}:</span>
+            <span class="text-h5 text-gray-80">{{ bet.amount }} грн</span>
+            <span class="text-h5 text-gray-40">
+              {{ bet.createdAt | date: 'dd.MM - HH:mm' }}
+            </span>
+          </div>
+          } @empty {
+          <span class="text-body text-gray-80">Ще немає ставок</span>
+          }
         </div>
-        } @empty {
-        <span class="text-body text-gray-80">Ще немає ставок</span>
-        }
       </div>
     </div>
   </div>
