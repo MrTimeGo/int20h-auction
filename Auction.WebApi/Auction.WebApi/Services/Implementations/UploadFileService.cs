@@ -15,19 +15,19 @@ namespace Auction.WebApi.Services.Implementations
                 .Get<S3Options>();
         public async Task<string[]> UploadListFilesAsync(List<IFormFile> files)
         {
-            //if(!await CheckIfBucketExistAsync())
-            //{
-            //    await CreateBucketAsync();
-            //}
+            if (!await CheckIfBucketExistAsync())
+            {
+                await CreateBucketAsync();
+            }
             var tasks = files.Select(UploadFileAsync).ToArray();
             return await Task.WhenAll(tasks);
         }
         public async Task<string> UploadFileAsync(IFormFile file)
         {
-            //if (!await CheckIfBucketExistAsync())
-            //{
-            //    await CreateBucketAsync();
-            //}
+            if (!await CheckIfBucketExistAsync())
+            {
+                await CreateBucketAsync();
+            }
             var objectKey = Path.Join(options!.FolderName, Guid.NewGuid().ToString() + "." + file.FileName.Split('.', StringSplitOptions.RemoveEmptyEntries).Last());
 
             await using var stream = file.OpenReadStream();
